@@ -45,6 +45,8 @@ int main()
     uniform_int_distribution<unsigned long> dist(0,numeric_limits<unsigned long >::max());
     auto gen=bind(dist,engine);
     size_t tests=1000;
+    unsigned long d[]={0,1,2,3,4,5,6,7,8,9};
+    ::sort(d,10);
     while(tests--)
     {
         constexpr size_t size=100000;

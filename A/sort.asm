@@ -41,34 +41,70 @@ sort:
     ; rdi=data
     ; rsi=count
     cmp   rsi,  2
-    jna   .end
+    jb    .end
     
-    mov   r15,  rsi		; r15=count
-    sar   r15,  1               ; r15=count/2
-    mov   r15,  [rdi+r15*8]	; r15=data[count/2]
-    ; r15=pivot
-    mov   r14,  rdi
-    mov   r13,  rdi
-    mov   r12,  rdi
-    ; r14=left
-    ; r13=center
-    ; r12=right
+    mov   rax,  rsi		; rax=count
+    shr   rax,  1               ; rax=count/2
+    mov   rax,  [rdi+rax*8]	; rax=data[count/2]
+    ; rax=pivot
+    mov   rcx,  rdi
+    mov   rdx,  rdi
+    mov   r8,   rdi
+    ; rcx=left
+    ; rdx=center
+    ; r8=right
     mov   r11,  rdi
     ; r11=i
-    mov   r10,  rdi
-    add   r10,  rsi
+    lea   r10,  [rdi+rsi*8]
     ; r10=data+count
   .for:
     cmp   r11,  r10
-    jnb   .end
+    jnb   .for_end
+    
+  .cmp_gt:
     ; if(*i>pivot)
-    cmp   [r11],r15
+    cmp   [r11],rax
     jna   .cmp_eq
+    add   r8,   8
+    jmp   .for_step
     
   .cmp_eq:
-    jne   .cmp_gt
+    ; if(*i==pivot)
+    jne   .cmp_lt
+    mov   r9,   [rdx]           ; r9=*center
+    xchg  r9,   [r11]           ; swap(r9,*i)
+    mov   [rdx],r9              ; *center=r9
+    add   rdx,  8               ; ++center
+    add   r8,   8               ; ++right
+    jmp   .for_step
     
-  .cmp_gt               ; true
+  .cmp_lt:                      ; true
+    ; if(*i<pivot)
+    mov   r9,   [rcx]           ; r9=*left
+    xchg  r9,   [rdx]           ; swap(r9,*center)
+    xchg  r9,   [r11]           ; swap(r9,*i)
+    xchg  r9,   [rcx]           ; swap(r9,*left)
+    add   rcx,  8               ; ++left
+    add   rdx,  8               ; ++center
+    add   r8,   8               ; ++right
+    ; fall into for_step
+    
+  .for_step:
+    add   r11,  8               ; ++i
+    jmp   .for
+    
+  .for_end:
+    push  rdx
+    sub   r8,   rdx
+    shr   r8,   3
+    push  r8
+    mov   rsi,  rcx
+    sub   rsi,  rdi
+    shr   rsi,  3
+    call sort
+    pop   rsi
+    pop   rdi
+    jmp   sort
     
   .end:
     ret
