@@ -10,12 +10,12 @@ extern "C" void sort(unsigned long * data, unsigned long count);
 int main()
 {
     mt19937 engine(404);
-    uniform_int_distribution<unsigned long> dist(0,100);
+    uniform_int_distribution<unsigned long> dist;
     auto gen=bind(dist,engine);
     size_t tests=1000;
     while(tests--)
     {
-        constexpr size_t size=15;
+        constexpr size_t size=100000;
         unsigned long *data=new unsigned long[size];
         for(auto i=0; i<size; ++i)
             data[i]=gen();

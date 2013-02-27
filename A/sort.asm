@@ -80,10 +80,16 @@ sort:
     
   .cmp_lt:                      ; true
     ; if(*i<pivot)
+    ;mov   r9,   [rcx]           ; r9=*left
+    ;xchg  r9,   [rdx]           ; swap(r9,*center)
+    ;xchg  r9,   [r11]           ; swap(r9,*i)
+    ;xchg  r9,   [rcx]           ; swap(r9,*left)
+    push  qword [r11]           ; push *i
+    mov   r9,   [rdx]           ; r9=*center
+    mov   [r11],r9              ; *i=r9
     mov   r9,   [rcx]           ; r9=*left
-    xchg  r9,   [rdx]           ; swap(r9,*center)
-    xchg  r9,   [r11]           ; swap(r9,*i)
-    xchg  r9,   [rcx]           ; swap(r9,*left)
+    mov   [rdx],r9              ; *center=r9
+    pop   qword [rcx]           ; pop *left
     add   rcx,  8               ; ++left
     add   rdx,  8               ; ++center
     add   r8,   8               ; ++right
