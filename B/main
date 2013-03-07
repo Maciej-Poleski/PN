@@ -1,0 +1,22 @@
+	.file	"main.cpp"
+	.intel_syntax noprefix
+	.text
+	.globl	_start
+	.type	_start, @function
+_start:
+.LFB0:
+	.cfi_startproc
+#APP
+# 7 "main.cpp" 1
+	mov rax,60
+	mov rdi,33
+	syscall
+	
+# 0 "" 2
+#NO_APP
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	_start, .-_start
+	.ident	"GCC: (Gentoo 4.6.3 p1.6, pie-0.5.2) 4.6.3"
+	.section	.note.GNU-stack,"",@progbits
