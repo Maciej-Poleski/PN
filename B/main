@@ -1,22 +1,160 @@
 	.file	"main.cpp"
 	.intel_syntax noprefix
 	.text
-	.globl	_start
-	.type	_start, @function
-_start:
-.LFB0:
+	.type	_Z14printDirectoryPci, @function
+_Z14printDirectoryPci:
+.LFB69:
 	.cfi_startproc
-#APP
-# 7 "main.cpp" 1
-	mov rax,60
-	mov rdi,33
-	syscall
-	
-# 0 "" 2
-#NO_APP
+	push	r15
+	.cfi_def_cfa_offset 16
+	.cfi_offset 15, -16
+	xor	eax, eax
+	push	r14
+	.cfi_def_cfa_offset 24
+	.cfi_offset 14, -24
+	push	r13
+	.cfi_def_cfa_offset 32
+	.cfi_offset 13, -32
+	movsx	r13, esi
+	push	r12
+	.cfi_def_cfa_offset 40
+	.cfi_offset 12, -40
+	mov	r12d, esi
+	xor	esi, esi
+	push	rbp
+	.cfi_def_cfa_offset 48
+	.cfi_offset 6, -48
+	lea	rbp, [rdi+r13]
+	push	rbx
+	.cfi_def_cfa_offset 56
+	.cfi_offset 3, -56
+	mov	rbx, rdi
+	sub	rsp, 344
+	.cfi_def_cfa_offset 400
+	mov	BYTE PTR [rbp+0], 0
+	call	open
+	mov	DWORD PTR [rsp+28], eax
+	inc	eax
+	jne	.L2
+	mov	rdi, rbx
+	call	perror
+	jmp	.L1
+.L2:
+	lea	edx, [r12+1]
+	mov	BYTE PTR [rbp+0], 10
+	mov	rsi, rbx
+	mov	edi, 1
+	movsx	rdx, edx
+	call	write
+.L9:
+	mov	esi, DWORD PTR [rsp+28]
+	lea	rdx, [rsp+36]
+	xor	eax, eax
+	mov	ecx, 300
+	mov	edi, 78
+	call	syscall
+	test	eax, eax
+	mov	r8d, eax
+	jle	.L1
+	xor	r14d, r14d
+.L8:
+	lea	rax, [rsp+36]
+	movsx	r15, r14d
+	add	r15, rax
+	cmp	BYTE PTR [r15+18], 46
+	jne	.L4
+	cmp	BYTE PTR [r15+19], 0
+	je	.L5
+	movabs	rax, 1099494850560
+	and	rax, QWORD PTR [r15+16]
+	cmp	rax, 771751936
+	jne	.L4
+.L5:
+	movzx	eax, WORD PTR [r15+16]
+	add	r14d, eax
+	jmp	.L6
+.L4:
+	cmp	BYTE PTR [rbx-1+r13], 47
+	jne	.L10
+	mov	al, BYTE PTR [rbp+0]
+	xor	edx, edx
+	jmp	.L7
+.L10:
+	mov	al, 47
+	mov	edx, 1
+.L7:
+	mov	BYTE PTR [rbp+0], al
+	movsx	rdi, edx
+	lea	rax, [r15+18]
+	add	rdi, r13
+	mov	DWORD PTR [rsp], r8d
+	mov	DWORD PTR [rsp+8], edx
+	add	rdi, rbx
+	mov	rsi, rax
+	mov	QWORD PTR [rsp+16], rax
+	call	strcpy
+	mov	rdi, QWORD PTR [rsp+16]
+	xor	eax, eax
+	mov	edx, DWORD PTR [rsp+8]
+	or	rcx, -1
+	repnz scasb
+	add	edx, r12d
+	mov	rdi, rbx
+	not	rcx
+	lea	esi, [rdx-1+rcx]
+	call	_Z14printDirectoryPci
+	movzx	eax, WORD PTR [r15+16]
+	mov	r8d, DWORD PTR [rsp]
+	add	r14d, eax
+.L6:
+	cmp	r14d, r8d
+	jge	.L9
+	jmp	.L8
+.L1:
+	add	rsp, 344
+	.cfi_def_cfa_offset 56
+	pop	rbx
+	.cfi_def_cfa_offset 48
+	pop	rbp
+	.cfi_def_cfa_offset 40
+	pop	r12
+	.cfi_def_cfa_offset 32
+	pop	r13
+	.cfi_def_cfa_offset 24
+	pop	r14
+	.cfi_def_cfa_offset 16
+	pop	r15
+	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE0:
-	.size	_start, .-_start
+.LFE69:
+	.size	_Z14printDirectoryPci, .-_Z14printDirectoryPci
+	.section	.text.startup,"ax",@progbits
+	.globl	main
+	.type	main, @function
+main:
+.LFB70:
+	.cfi_startproc
+	sub	rsp, 4120
+	.cfi_def_cfa_offset 4128
+	mov	rsi, QWORD PTR [rsi+8]
+	mov	edx, 4097
+	lea	rdi, [rsp+15]
+	call	__strcpy_chk
+	lea	rdi, [rsp+15]
+	xor	eax, eax
+	or	rcx, -1
+	repnz scasb
+	lea	rdi, [rsp+15]
+	not	rcx
+	lea	rsi, [rcx-1]
+	call	_Z14printDirectoryPci
+	xor	eax, eax
+	add	rsp, 4120
+	.cfi_def_cfa_offset 8
+	ret
+	.cfi_endproc
+.LFE70:
+	.size	main, .-main
 	.ident	"GCC: (Gentoo 4.6.3 p1.6, pie-0.5.2) 4.6.3"
 	.section	.note.GNU-stack,"",@progbits
