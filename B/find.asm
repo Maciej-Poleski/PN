@@ -10,19 +10,24 @@ printDirectory:
     mov rdi,r14
     mov byte [rdi+r15],0           ;path[length]='\0'
     mov rax,2
-    xor rsi,rsi
+    mov rsi,131072                 ; O_NOFOLLOW
     syscall
     
     test rax,rax
     jns .cont
-    cmp rax,-20                    ;if(errno==ENOTDIR)
     
+    cmp rax,-20                    ;if(errno==ENOTDIR)
     jne .enoent
+    
     mov rsi,not_a_directory
     mov rcx,not_a_directory.end-not_a_directory
     jmp .write_error
     
     .enoent:
+    cmp rax,-40                    ;if(errno==ELOOP)
+    je .cont
+    
+    .no_such_file_or_directory:
     mov rsi,no_such_file_or_directory
     mov rcx,no_such_file_or_directory.end-no_such_file_or_directory
     
@@ -49,6 +54,7 @@ printDirectory:
     mov r13,rax                 ; r13=fd
     mov rax,1
     syscall                     ; write path
+    je .return_in_some_place
     
     sub rsp,300 & (~0xf)            ; rsp=buf
     .for_start:
@@ -61,9 +67,10 @@ printDirectory:
     test rax,rax                ; rax <=BUFF_SIZE=300 & (~0xf) , rax>0 -> rax=ax
     jg .for_cont
     add rsp,300 & (~0xf)
-    mov rdi,r13
-    mov rax,3
-    syscall
+    ;mov rdi,r13
+    ;mov rax,3
+    ;syscall
+    .return_in_some_place:
     ret
     
     ; state: r12,dx,rsp,r14,r15,r13
@@ -143,7 +150,7 @@ _start:
     
     ; tutaj nie dotrzemy
     
-    not_a_directory: db "': Not a directory",0xa,0
+    not_a_directory: db "': Not a directory",0xa
     .end:
-    no_such_file_or_directory: db "': No such file or directory",0xa,0
+    no_such_file_or_directory: db "': No such file or directory",0xa
     .end:

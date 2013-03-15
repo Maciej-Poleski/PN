@@ -27,4 +27,6 @@ int main()
     linux_dirent d;
     cout<<sizeof(d.d_reclen)<<' '<<offsetof(linux_dirent,d_reclen)<<'\n';
     cout<<sizeof(d.d_name)<<' '<<offsetof(linux_dirent,d_name)<<'\n';
+    cout<<O_NOFOLLOW<<endl;
+    cout<<ELOOP<<endl;
 }
