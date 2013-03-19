@@ -67,9 +67,9 @@ printDirectory:
     test rax,rax                ; rax <=BUFF_SIZE=300 & (~0xf) , rax>0 -> rax=ax
     jg .for_cont
     add rsp,300 & (~0xf)
-    ;mov rdi,r13
-    ;mov rax,3
-    ;syscall
+    mov rdi,r13
+    mov rax,3
+    syscall
     .return_in_some_place:
     ret
     
