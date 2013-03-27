@@ -232,7 +232,7 @@ void expr_destroy(struct expr * expr) {
     free(expr);
 }
 
-
+/*
 
 void expr_eval_one(float * result, struct expr * expr, float const * vars) {
     float inner, left, right;
@@ -299,7 +299,7 @@ void expr_eval_one(float * result, struct expr * expr, float const * vars) {
             *result = (left > right) ? left : right;
             break;
     }
-}
+}*/
 
 // float * expr_eval(struct expr * expr, unsigned long rows, unsigned long cols, float const * data) {
 //     float * results = (float *) malloc(rows * sizeof(float));

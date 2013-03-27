@@ -13,7 +13,7 @@ PRG_D := expr
 all : ${PRG_S} ${PRG_D}
 
 ${PRG_S} : main.c ${OBJ_C} ${OBJ_A}
-#	gcc -std=c99 $^ -lm -static -o $@
+	gcc -std=c99 $^ -lm -static -o $@
 
 ${PRG_D} : main.c ${PRG_L}
 	gcc -std=c99 $^ -lm -o $@
