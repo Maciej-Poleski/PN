@@ -52,6 +52,21 @@ public:
     void Print() const; // hex to stdout
     
 private:
+    /**
+     * Dostosowuje długość zaalokowanego obszaru do aktualnej potrzeby
+     */
+    void shrink();
+    
+    /**
+     * Mnoży liczbę razy (2^64)^i
+     */
+    void shift(unsigned long i);
+    
+    /**
+     * Rezerwuje wskazaną ilość QWORD-ów.
+     */
+    void resize(unsigned long i);
+    
     unsigned long *begin,*end;
 };
 
