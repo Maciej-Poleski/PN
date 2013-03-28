@@ -4,7 +4,7 @@
 #include <cstdlib>
 #include <cstring>
 
-static void printULong(unsigned long n)
+ static void printULong(unsigned long n)
 {
     printf("%lx",n);
 }

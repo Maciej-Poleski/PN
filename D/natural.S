@@ -1,31 +1,30 @@
 	.file	"natural.cpp"
-	.intel_syntax noprefix
 	.text
 	.type	_ZL19parseBigendianQwordPKci, @function
 _ZL19parseBigendianQwordPKci:
 .LFB59:
 	.cfi_startproc
-	xor	edx, edx
-	xor	eax, eax
+	xorl	%edx, %edx
+	xorl	%eax, %eax
 	jmp	.L2
 .L5:
-	mov	rcx, rdx
-	neg	rcx
-	movsx	r8d, BYTE PTR [rdi+15+rcx]
-	cmp	r8b, 57
+	movq	%rdx, %rcx
+	negq	%rcx
+	movsbl	15(%rdi,%rcx), %r8d
+	cmpb	$57, %r8b
 	jg	.L3
-	sub	r8d, 48
+	subl	$48, %r8d
 	jmp	.L6
 .L3:
-	sub	r8d, 87
+	subl	$87, %r8d
 .L6:
-	lea	ecx, [0+rdx*4]
-	movsx	r8, r8d
-	inc	rdx
-	sal	r8, cl
-	or	rax, r8
+	leal	0(,%rdx,4), %ecx
+	movslq	%r8d, %r8
+	incq	%rdx
+	salq	%cl, %r8
+	orq	%r8, %rax
 .L2:
-	cmp	esi, edx
+	cmpl	%edx, %esi
 	jg	.L5
 	ret
 	.cfi_endproc
@@ -37,62 +36,62 @@ _ZL19parseBigendianQwordPKci:
 _ZN7Natural5shiftEm:
 .LFB61:
 	.cfi_startproc
-	push	r14
+	pushq	%r14
 	.cfi_def_cfa_offset 16
 	.cfi_offset 14, -16
-	mov	r14, rsi
-	push	r13
+	movq	%rsi, %r14
+	pushq	%r13
 	.cfi_def_cfa_offset 24
 	.cfi_offset 13, -24
-	push	r12
+	pushq	%r12
 	.cfi_def_cfa_offset 32
 	.cfi_offset 12, -32
-	push	rbp
+	pushq	%rbp
 	.cfi_def_cfa_offset 40
 	.cfi_offset 6, -40
-	mov	rbp, rdi
-	push	rbx
+	movq	%rdi, %rbp
+	pushq	%rbx
 	.cfi_def_cfa_offset 48
 	.cfi_offset 3, -48
-	mov	r12, QWORD PTR [rdi]
-	mov	rbx, QWORD PTR [rdi+8]
-	sub	rbx, r12
-	sar	rbx, 3
-	lea	r13, [rbx+rsi]
-	sal	r13, 3
-	mov	rdi, r13
+	movq	(%rdi), %r12
+	movq	8(%rdi), %rbx
+	subq	%r12, %rbx
+	sarq	$3, %rbx
+	leaq	(%rbx,%rsi), %r13
+	salq	$3, %r13
+	movq	%r13, %rdi
 	call	malloc
-	add	r13, rax
-	mov	QWORD PTR [rbp+0], rax
-	xor	edx, edx
-	mov	QWORD PTR [rbp+8], r13
+	addq	%rax, %r13
+	movq	%rax, 0(%rbp)
+	xorl	%edx, %edx
+	movq	%r13, 8(%rbp)
 	jmp	.L8
 .L9:
-	mov	QWORD PTR [rax+rdx*8], 0
-	inc	rdx
+	movq	$0, (%rax,%rdx,8)
+	incq	%rdx
 .L8:
-	cmp	rdx, r14
+	cmpq	%r14, %rdx
 	jne	.L9
-	lea	rdx, [rax+rdx*8]
-	xor	eax, eax
+	leaq	(%rax,%rdx,8), %rdx
+	xorl	%eax, %eax
 	jmp	.L10
 .L11:
-	mov	rcx, QWORD PTR [r12+rax*8]
-	mov	QWORD PTR [rdx+rax*8], rcx
-	inc	rax
+	movq	(%r12,%rax,8), %rcx
+	movq	%rcx, (%rdx,%rax,8)
+	incq	%rax
 .L10:
-	cmp	rax, rbx
+	cmpq	%rbx, %rax
 	jne	.L11
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 40
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 32
-	mov	rdi, r12
-	pop	r12
+	movq	%r12, %rdi
+	popq	%r12
 	.cfi_def_cfa_offset 24
-	pop	r13
+	popq	%r13
 	.cfi_def_cfa_offset 16
-	pop	r14
+	popq	%r14
 	.cfi_def_cfa_offset 8
 	jmp	free
 	.cfi_endproc
@@ -104,17 +103,17 @@ _ZN7Natural5shiftEm:
 _ZN7NaturalC2Ev:
 .LFB63:
 	.cfi_startproc
-	push	rbx
+	pushq	%rbx
 	.cfi_def_cfa_offset 16
 	.cfi_offset 3, -16
-	mov	rbx, rdi
-	mov	edi, 8
+	movq	%rdi, %rbx
+	movl	$8, %edi
 	call	malloc
-	lea	rdx, [rax+8]
-	mov	QWORD PTR [rbx], rax
-	mov	QWORD PTR [rbx+8], rdx
-	mov	QWORD PTR [rax], 0
-	pop	rbx
+	leaq	8(%rax), %rdx
+	movq	%rax, (%rbx)
+	movq	%rdx, 8(%rbx)
+	movq	$0, (%rax)
+	popq	%rbx
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -128,27 +127,27 @@ _ZN7NaturalC2Ev:
 _ZN7NaturalC2Em:
 .LFB66:
 	.cfi_startproc
-	push	rbp
+	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
-	mov	rbp, rsi
-	push	rbx
+	movq	%rsi, %rbp
+	pushq	%rbx
 	.cfi_def_cfa_offset 24
 	.cfi_offset 3, -24
-	mov	rbx, rdi
-	mov	edi, 8
-	push	rax
+	movq	%rdi, %rbx
+	movl	$8, %edi
+	pushq	%rax
 	.cfi_def_cfa_offset 32
 	call	malloc
-	lea	rdx, [rax+8]
-	mov	QWORD PTR [rbx], rax
-	mov	QWORD PTR [rbx+8], rdx
-	mov	QWORD PTR [rax], rbp
-	pop	rdx
+	leaq	8(%rax), %rdx
+	movq	%rax, (%rbx)
+	movq	%rdx, 8(%rbx)
+	movq	%rbp, (%rax)
+	popq	%rdx
 	.cfi_def_cfa_offset 24
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 16
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -162,91 +161,91 @@ _ZN7NaturalC2Em:
 _ZN7NaturalC2EPKc:
 .LFB69:
 	.cfi_startproc
-	push	r15
+	pushq	%r15
 	.cfi_def_cfa_offset 16
 	.cfi_offset 15, -16
-	xor	eax, eax
-	or	rcx, -1
-	push	r14
+	xorl	%eax, %eax
+	orq	$-1, %rcx
+	pushq	%r14
 	.cfi_def_cfa_offset 24
 	.cfi_offset 14, -24
-	push	r13
+	pushq	%r13
 	.cfi_def_cfa_offset 32
 	.cfi_offset 13, -32
-	xor	r13d, r13d
-	push	r12
+	xorl	%r13d, %r13d
+	pushq	%r12
 	.cfi_def_cfa_offset 40
 	.cfi_offset 12, -40
-	mov	r12, rsi
-	push	rbp
+	movq	%rsi, %r12
+	pushq	%rbp
 	.cfi_def_cfa_offset 48
 	.cfi_offset 6, -48
-	mov	rbp, rdi
-	mov	rdi, rsi
-	push	rbx
+	movq	%rdi, %rbp
+	movq	%rsi, %rdi
+	pushq	%rbx
 	.cfi_def_cfa_offset 56
 	.cfi_offset 3, -56
-	sub	rsp, 24
+	subq	$24, %rsp
 	.cfi_def_cfa_offset 80
 	repnz scasb
-	not	rcx
-	lea	rbx, [rcx-1]
-	test	bl, 15
-	mov	rax, rbx
-	setne	r13b
-	shr	rax, 4
-	add	r13, rax
-	sal	r13, 3
-	mov	rdi, r13
+	notq	%rcx
+	leaq	-1(%rcx), %rbx
+	testb	$15, %bl
+	movq	%rbx, %rax
+	setne	%r13b
+	shrq	$4, %rax
+	addq	%rax, %r13
+	salq	$3, %r13
+	movq	%r13, %rdi
 	call	malloc
-	mov	rdx, rbx
-	mov	QWORD PTR [rbp+0], rax
-	add	r13, rax
-	mov	r14, rax
-	movsx	rax, ebx
-	mov	QWORD PTR [rbp+8], r13
-	sub	rdx, rax
-	lea	rax, [r12-16+rax]
-	xor	ebp, ebp
-	mov	QWORD PTR [rsp], rdx
-	mov	QWORD PTR [rsp+8], rax
+	movq	%rbx, %rdx
+	movq	%rax, 0(%rbp)
+	addq	%rax, %r13
+	movq	%rax, %r14
+	movslq	%ebx, %rax
+	movq	%r13, 8(%rbp)
+	subq	%rax, %rdx
+	leaq	-16(%r12,%rax), %rax
+	xorl	%ebp, %ebp
+	movq	%rdx, (%rsp)
+	movq	%rax, 8(%rsp)
 	jmp	.L18
 .L19:
-	mov	rax, QWORD PTR [rsp]
-	mov	rdi, QWORD PTR [rsp+8]
-	mov	esi, 16
-	add	rax, rbp
-	sub	rdi, rbp
-	add	rbp, 16
-	shr	rax, 4
-	lea	r15, [r14+rax*8]
+	movq	(%rsp), %rax
+	movq	8(%rsp), %rdi
+	movl	$16, %esi
+	addq	%rbp, %rax
+	subq	%rbp, %rdi
+	addq	$16, %rbp
+	shrq	$4, %rax
+	leaq	(%r14,%rax,8), %r15
 	call	_ZL19parseBigendianQwordPKci
-	mov	QWORD PTR [r15], rax
+	movq	%rax, (%r15)
 .L18:
-	mov	esi, ebx
-	sub	esi, ebp
-	cmp	esi, 15
+	movl	%ebx, %esi
+	subl	%ebp, %esi
+	cmpl	$15, %esi
 	jg	.L19
-	test	esi, esi
+	testl	%esi, %esi
 	jle	.L17
-	movsx	rax, esi
-	lea	rdi, [r12-16+rax]
+	movslq	%esi, %rax
+	leaq	-16(%r12,%rax), %rdi
 	call	_ZL19parseBigendianQwordPKci
-	mov	QWORD PTR [r13-8], rax
+	movq	%rax, -8(%r13)
 .L17:
-	add	rsp, 24
+	addq	$24, %rsp
 	.cfi_def_cfa_offset 56
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 48
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 40
-	pop	r12
+	popq	%r12
 	.cfi_def_cfa_offset 32
-	pop	r13
+	popq	%r13
 	.cfi_def_cfa_offset 24
-	pop	r14
+	popq	%r14
 	.cfi_def_cfa_offset 16
-	pop	r15
+	popq	%r15
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -260,34 +259,34 @@ _ZN7NaturalC2EPKc:
 _ZN7NaturalC2ERKS_:
 .LFB72:
 	.cfi_startproc
-	push	r12
+	pushq	%r12
 	.cfi_def_cfa_offset 16
 	.cfi_offset 12, -16
-	mov	r12, rdi
-	push	rbp
+	movq	%rdi, %r12
+	pushq	%rbp
 	.cfi_def_cfa_offset 24
 	.cfi_offset 6, -24
-	mov	rbp, rsi
-	push	rbx
+	movq	%rsi, %rbp
+	pushq	%rbx
 	.cfi_def_cfa_offset 32
 	.cfi_offset 3, -32
-	mov	rbx, QWORD PTR [rsi+8]
-	sub	rbx, QWORD PTR [rsi]
-	and	rbx, -8
-	mov	rdi, rbx
+	movq	8(%rsi), %rbx
+	subq	(%rsi), %rbx
+	andq	$-8, %rbx
+	movq	%rbx, %rdi
 	call	malloc
-	lea	rdx, [rax+rbx]
-	mov	QWORD PTR [r12], rax
-	mov	rcx, rbx
-	mov	rsi, QWORD PTR [rbp+0]
-	mov	rdi, rax
-	mov	QWORD PTR [r12+8], rdx
+	leaq	(%rax,%rbx), %rdx
+	movq	%rax, (%r12)
+	movq	%rbx, %rcx
+	movq	0(%rbp), %rsi
+	movq	%rax, %rdi
+	movq	%rdx, 8(%r12)
 	rep movsb
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 24
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 16
-	pop	r12
+	popq	%r12
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -301,37 +300,37 @@ _ZN7NaturalC2ERKS_:
 _ZN7NaturalaSERKS_:
 .LFB83:
 	.cfi_startproc
-	push	r12
+	pushq	%r12
 	.cfi_def_cfa_offset 16
 	.cfi_offset 12, -16
-	mov	r12, rsi
-	push	rbp
+	movq	%rsi, %r12
+	pushq	%rbp
 	.cfi_def_cfa_offset 24
 	.cfi_offset 6, -24
-	mov	rbp, rdi
-	push	rbx
+	movq	%rdi, %rbp
+	pushq	%rbx
 	.cfi_def_cfa_offset 32
 	.cfi_offset 3, -32
-	mov	rdi, QWORD PTR [rdi]
+	movq	(%rdi), %rdi
 	call	free
-	mov	rbx, QWORD PTR [r12+8]
-	sub	rbx, QWORD PTR [r12]
-	and	rbx, -8
-	mov	rdi, rbx
+	movq	8(%r12), %rbx
+	subq	(%r12), %rbx
+	andq	$-8, %rbx
+	movq	%rbx, %rdi
 	call	malloc
-	lea	rdx, [rax+rbx]
-	mov	QWORD PTR [rbp+0], rax
-	mov	rdi, rax
-	mov	rsi, QWORD PTR [r12]
-	mov	rcx, rbx
-	mov	rax, rbp
-	mov	QWORD PTR [rbp+8], rdx
+	leaq	(%rax,%rbx), %rdx
+	movq	%rax, 0(%rbp)
+	movq	%rax, %rdi
+	movq	(%r12), %rsi
+	movq	%rbx, %rcx
+	movq	%rbp, %rax
+	movq	%rdx, 8(%rbp)
 	rep movsb
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 24
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 16
-	pop	r12
+	popq	%r12
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -343,27 +342,27 @@ _ZN7NaturalaSERKS_:
 _ZNK7NaturaleqERKS_:
 .LFB84:
 	.cfi_startproc
-	mov	r8, QWORD PTR [rdi]
-	mov	rdx, QWORD PTR [rdi+8]
-	xor	eax, eax
-	mov	rdi, QWORD PTR [rsi]
-	mov	rcx, QWORD PTR [rsi+8]
-	sub	rdx, r8
-	sub	rcx, rdi
-	sar	rdx, 3
-	sar	rcx, 3
-	cmp	rdx, rcx
+	movq	(%rdi), %r8
+	movq	8(%rdi), %rdx
+	xorl	%eax, %eax
+	movq	(%rsi), %rdi
+	movq	8(%rsi), %rcx
+	subq	%r8, %rdx
+	subq	%rdi, %rcx
+	sarq	$3, %rdx
+	sarq	$3, %rcx
+	cmpq	%rcx, %rdx
 	jne	.L31
-	push	rcx
+	pushq	%rcx
 	.cfi_def_cfa_offset 16
-	mov	rsi, rdi
-	sal	rdx, 3
-	mov	rdi, r8
+	movq	%rdi, %rsi
+	salq	$3, %rdx
+	movq	%r8, %rdi
 	call	memcmp
-	pop	rsi
+	popq	%rsi
 	.cfi_def_cfa_offset 8
-	test	eax, eax
-	sete	al
+	testl	%eax, %eax
+	sete	%al
 .L31:
 	ret
 	.cfi_endproc
@@ -375,12 +374,12 @@ _ZNK7NaturaleqERKS_:
 _ZNK7NaturalneERKS_:
 .LFB74:
 	.cfi_startproc
-	push	r8
+	pushq	%r8
 	.cfi_def_cfa_offset 16
 	call	_ZNK7NaturaleqERKS_
-	pop	r9
+	popq	%r9
 	.cfi_def_cfa_offset 8
-	xor	eax, 1
+	xorl	$1, %eax
 	ret
 	.cfi_endproc
 .LFE74:
@@ -397,41 +396,41 @@ _ZNK7NaturalneERKS_:
 _ZNK7Natural5PrintEv:
 .LFB88:
 	.cfi_startproc
-	push	rbp
+	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
-	mov	rbp, rdi
-	mov	esi, OFFSET FLAT:.LC0
-	push	rbx
+	movq	%rdi, %rbp
+	movl	$.LC0, %esi
+	pushq	%rbx
 	.cfi_def_cfa_offset 24
 	.cfi_offset 3, -24
-	push	r11
+	pushq	%r11
 	.cfi_def_cfa_offset 32
-	mov	rax, QWORD PTR [rdi+8]
-	mov	edi, 1
-	mov	rdx, QWORD PTR [rax-8]
-	xor	eax, eax
+	movq	8(%rdi), %rax
+	movl	$1, %edi
+	movq	-8(%rax), %rdx
+	xorl	%eax, %eax
 	call	__printf_chk
-	mov	rbx, QWORD PTR [rbp+8]
-	sub	rbx, 16
+	movq	8(%rbp), %rbx
+	subq	$16, %rbx
 	jmp	.L35
 .L36:
-	mov	rdx, QWORD PTR [rbx]
-	mov	esi, OFFSET FLAT:.LC1
-	mov	edi, 1
-	xor	eax, eax
-	sub	rbx, 8
+	movq	(%rbx), %rdx
+	movl	$.LC1, %esi
+	movl	$1, %edi
+	xorl	%eax, %eax
+	subq	$8, %rbx
 	call	__printf_chk
 .L35:
-	cmp	rbx, QWORD PTR [rbp+0]
+	cmpq	0(%rbp), %rbx
 	jae	.L36
-	pop	r10
+	popq	%r10
 	.cfi_def_cfa_offset 24
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 16
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 8
-	mov	edi, 10
+	movl	$10, %edi
 	jmp	putchar
 	.cfi_endproc
 .LFE88:
@@ -442,41 +441,41 @@ _ZNK7Natural5PrintEv:
 _ZNK7Natural4SizeEv:
 .LFB89:
 	.cfi_startproc
-	mov	rcx, QWORD PTR [rdi]
-	mov	rax, QWORD PTR [rdi+8]
-	sub	rax, rcx
-	sar	rax, 3
-	dec	eax
-	movsx	rdx, eax
-	lea	rdi, [rcx+rdx*8]
-	xor	edx, edx
+	movq	(%rdi), %rcx
+	movq	8(%rdi), %rax
+	subq	%rcx, %rax
+	sarq	$3, %rax
+	decl	%eax
+	movslq	%eax, %rdx
+	leaq	(%rcx,%rdx,8), %rdi
+	xorl	%edx, %edx
 	jmp	.L39
 .L41:
-	inc	rdx
-	imul	r8, rdx, -8
-	cmp	QWORD PTR [rdi+8+r8], 0
+	incq	%rdx
+	imulq	$-8, %rdx, %r8
+	cmpq	$0, 8(%rdi,%r8)
 	je	.L39
 .L42:
-	mov	edi, esi
-	movsx	rsi, esi
-	xor	eax, eax
-	sal	edi, 6
-	mov	rdx, QWORD PTR [rcx+rsi*8]
-	movsx	rdi, edi
+	movl	%esi, %edi
+	movslq	%esi, %rsi
+	xorl	%eax, %eax
+	sall	$6, %edi
+	movq	(%rcx,%rsi,8), %rdx
+	movslq	%edi, %rdi
 	jmp	.L40
 .L39:
-	mov	esi, eax
-	sub	esi, edx
-	test	esi, esi
+	movl	%eax, %esi
+	subl	%edx, %esi
+	testl	%esi, %esi
 	jg	.L41
 	jmp	.L42
 .L43:
-	shr	rdx
-	inc	rax
+	shrq	%rdx
+	incq	%rax
 .L40:
-	test	rdx, rdx
+	testq	%rdx, %rdx
 	jne	.L43
-	add	rax, rdi
+	addq	%rdi, %rax
 	ret
 	.cfi_endproc
 .LFE89:
@@ -488,8 +487,8 @@ _ZNK7NaturalcvbEv:
 .LFB87:
 	.cfi_startproc
 	call	_ZNK7Natural4SizeEv
-	test	rax, rax
-	setne	al
+	testq	%rax, %rax
+	setne	%al
 	ret
 	.cfi_endproc
 .LFE87:
@@ -500,57 +499,57 @@ _ZNK7NaturalcvbEv:
 _ZNK7NaturalltERKS_:
 .LFB81:
 	.cfi_startproc
-	push	r12
+	pushq	%r12
 	.cfi_def_cfa_offset 16
 	.cfi_offset 12, -16
-	push	rbp
+	pushq	%rbp
 	.cfi_def_cfa_offset 24
 	.cfi_offset 6, -24
-	mov	rbp, rsi
-	push	rbx
+	movq	%rsi, %rbp
+	pushq	%rbx
 	.cfi_def_cfa_offset 32
 	.cfi_offset 3, -32
-	mov	rbx, rdi
+	movq	%rdi, %rbx
 	call	_ZNK7Natural4SizeEv
-	mov	rdi, rbp
-	mov	r12, rax
+	movq	%rbp, %rdi
+	movq	%rax, %r12
 	call	_ZNK7Natural4SizeEv
-	cmp	r12, rax
-	mov	dl, 1
+	cmpq	%rax, %r12
+	movb	$1, %dl
 	jb	.L47
-	mov	dl, 0
+	movb	$0, %dl
 	ja	.L47
-	mov	rsi, QWORD PTR [rbx]
-	mov	rax, QWORD PTR [rbx+8]
-	xor	ecx, ecx
-	sub	rax, rsi
-	sar	rax, 3
-	dec	eax
-	movsx	rdx, eax
-	sal	rdx, 3
+	movq	(%rbx), %rsi
+	movq	8(%rbx), %rax
+	xorl	%ecx, %ecx
+	subq	%rsi, %rax
+	sarq	$3, %rax
+	decl	%eax
+	movslq	%eax, %rdx
+	salq	$3, %rdx
 	jmp	.L48
 .L50:
-	mov	rdi, QWORD PTR [rbp+0]
-	mov	r8, QWORD PTR [rsi+rdx]
-	inc	rcx
-	mov	rdi, QWORD PTR [rdi+rdx]
-	sub	rdx, 8
-	cmp	r8, rdi
+	movq	0(%rbp), %rdi
+	movq	(%rsi,%rdx), %r8
+	incq	%rcx
+	movq	(%rdi,%rdx), %rdi
+	subq	$8, %rdx
+	cmpq	%rdi, %r8
 	jb	.L53
 .L48:
-	cmp	eax, ecx
+	cmpl	%ecx, %eax
 	jns	.L50
-	xor	edx, edx
+	xorl	%edx, %edx
 	jmp	.L47
 .L53:
-	mov	dl, 1
+	movb	$1, %dl
 .L47:
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 24
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 16
-	mov	al, dl
-	pop	r12
+	movb	%dl, %al
+	popq	%r12
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -563,7 +562,7 @@ _ZNK7NaturalgeERKS_:
 .LFB86:
 	.cfi_startproc
 	call	_ZNK7NaturalltERKS_
-	xor	eax, 1
+	xorl	$1, %eax
 	ret
 	.cfi_endproc
 .LFE86:
@@ -574,37 +573,37 @@ _ZNK7NaturalgeERKS_:
 _ZNK7NaturalleERKS_:
 .LFB82:
 	.cfi_startproc
-	push	rbp
+	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
-	mov	rbp, rsi
-	push	rbx
+	movq	%rsi, %rbp
+	pushq	%rbx
 	.cfi_def_cfa_offset 24
 	.cfi_offset 3, -24
-	mov	rbx, rdi
-	push	rax
+	movq	%rdi, %rbx
+	pushq	%rax
 	.cfi_def_cfa_offset 32
 	call	_ZNK7NaturalltERKS_
-	test	al, al
+	testb	%al, %al
 	jne	.L57
-	mov	rsi, rbp
-	mov	rdi, rbx
-	pop	rbp
+	movq	%rbp, %rsi
+	movq	%rbx, %rdi
+	popq	%rbp
 	.cfi_remember_state
 	.cfi_def_cfa_offset 24
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 16
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 8
 	jmp	_ZNK7NaturaleqERKS_
 .L57:
 	.cfi_restore_state
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 24
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 16
-	mov	al, 1
-	pop	rbp
+	movb	$1, %al
+	popq	%rbp
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -616,12 +615,12 @@ _ZNK7NaturalleERKS_:
 _ZNK7NaturalgtERKS_:
 .LFB85:
 	.cfi_startproc
-	push	rax
+	pushq	%rax
 	.cfi_def_cfa_offset 16
 	call	_ZNK7NaturalleERKS_
-	pop	rdx
+	popq	%rdx
 	.cfi_def_cfa_offset 8
-	xor	eax, 1
+	xorl	$1, %eax
 	ret
 	.cfi_endproc
 .LFE85:
@@ -632,27 +631,27 @@ _ZNK7NaturalgtERKS_:
 _ZN7Natural6resizeEm:
 .LFB90:
 	.cfi_startproc
-	push	rbp
+	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
-	lea	rbp, [0+rsi*8]
-	push	rbx
+	leaq	0(,%rsi,8), %rbp
+	pushq	%rbx
 	.cfi_def_cfa_offset 24
 	.cfi_offset 3, -24
-	mov	rbx, rdi
-	mov	rsi, rbp
-	push	rcx
+	movq	%rdi, %rbx
+	movq	%rbp, %rsi
+	pushq	%rcx
 	.cfi_def_cfa_offset 32
-	mov	rdi, QWORD PTR [rdi]
+	movq	(%rdi), %rdi
 	call	realloc
-	add	rbp, rax
-	mov	QWORD PTR [rbx], rax
-	mov	QWORD PTR [rbx+8], rbp
-	pop	rsi
+	addq	%rax, %rbp
+	movq	%rax, (%rbx)
+	movq	%rbp, 8(%rbx)
+	popq	%rsi
 	.cfi_def_cfa_offset 24
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 16
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -664,16 +663,16 @@ _ZN7Natural6resizeEm:
 _ZN7Natural6shrinkEv:
 .LFB91:
 	.cfi_startproc
-	mov	rdx, QWORD PTR [rdi]
-	add	rdx, 8
+	movq	(%rdi), %rdx
+	addq	$8, %rdx
 .L66:
-	mov	rax, QWORD PTR [rdi+8]
-	cmp	rdx, rax
+	movq	8(%rdi), %rax
+	cmpq	%rax, %rdx
 	jae	.L63
-	cmp	QWORD PTR [rax-8], 0
+	cmpq	$0, -8(%rax)
 	jne	.L63
-	sub	rax, 8
-	mov	QWORD PTR [rdi+8], rax
+	subq	$8, %rax
+	movq	%rax, 8(%rdi)
 	jmp	.L66
 .L63:
 	ret
@@ -686,99 +685,99 @@ _ZN7Natural6shrinkEv:
 _ZNK7NaturalplERKS_:
 .LFB77:
 	.cfi_startproc
-	push	r15
+	pushq	%r15
 	.cfi_def_cfa_offset 16
 	.cfi_offset 15, -16
-	mov	r15, rdx
-	push	r14
+	movq	%rdx, %r15
+	pushq	%r14
 	.cfi_def_cfa_offset 24
 	.cfi_offset 14, -24
-	push	r13
+	pushq	%r13
 	.cfi_def_cfa_offset 32
 	.cfi_offset 13, -32
-	mov	r13, rsi
-	push	r12
+	movq	%rsi, %r13
+	pushq	%r12
 	.cfi_def_cfa_offset 40
 	.cfi_offset 12, -40
-	push	rbp
+	pushq	%rbp
 	.cfi_def_cfa_offset 48
 	.cfi_offset 6, -48
-	push	rbx
+	pushq	%rbx
 	.cfi_def_cfa_offset 56
 	.cfi_offset 3, -56
-	mov	rbx, rdi
-	sub	rsp, 40
+	movq	%rdi, %rbx
+	subq	$40, %rsp
 	.cfi_def_cfa_offset 96
 	call	_ZN7NaturalC1Ev
-	mov	r12, QWORD PTR [r13+8]
-	mov	rbp, QWORD PTR [r15+8]
-	sub	r12, QWORD PTR [r13+0]
-	sub	rbp, QWORD PTR [r15]
-	mov	rdi, QWORD PTR [rbx]
-	sar	r12, 3
-	sar	rbp, 3
-	cmp	rbp, r12
-	mov	rax, r12
-	cmovae	rax, rbp
-	lea	r14, [8+rax*8]
-	mov	rsi, r14
+	movq	8(%r13), %r12
+	movq	8(%r15), %rbp
+	subq	0(%r13), %r12
+	subq	(%r15), %rbp
+	movq	(%rbx), %rdi
+	sarq	$3, %r12
+	sarq	$3, %rbp
+	cmpq	%r12, %rbp
+	movq	%r12, %rax
+	cmovae	%rbp, %rax
+	leaq	8(,%rax,8), %r14
+	movq	%r14, %rsi
 	call	realloc
-	lea	rcx, [rax+r14]
-	mov	QWORD PTR [rbx], rax
-	mov	rdx, rax
-	mov	QWORD PTR [rbx+8], rcx
+	leaq	(%rax,%r14), %rcx
+	movq	%rax, (%rbx)
+	movq	%rax, %rdx
+	movq	%rcx, 8(%rbx)
 	jmp	.L68
 .L69:
-	mov	QWORD PTR [rdx], 0
-	add	rdx, 8
+	movq	$0, (%rdx)
+	addq	$8, %rdx
 .L68:
-	cmp	rdx, rcx
+	cmpq	%rcx, %rdx
 	jb	.L69
-	mov	rdi, rax
-	lea	rcx, [0+r12*8]
-	mov	rsi, QWORD PTR [r13+0]
-	xor	eax, eax
+	movq	%rax, %rdi
+	leaq	0(,%r12,8), %rcx
+	movq	0(%r13), %rsi
+	xorl	%eax, %eax
 	rep movsb
 	jmp	.L70
 .L71:
-	lea	rdx, [rdx+rax*8]
-	movsx	rcx, ecx
-	mov	QWORD PTR [rsp+8], 0
-	mov	QWORD PTR [rsp+24], 0
-	mov	rdi, QWORD PTR [rsp+24]
-	mov	rsi, QWORD PTR [rdx]
-	mov	QWORD PTR [rsp], rsi
-	mov	rsi, QWORD PTR [r15]
-	add	rcx, QWORD PTR [rsi+rax*8]
-	mov	QWORD PTR [rsp+16], rcx
-	mov	rsi, QWORD PTR [rsp+16]
-	add	rsi, QWORD PTR [rsp]
-	adc	rdi, QWORD PTR [rsp+8]
-	inc	rax
-	mov	QWORD PTR [rdx], rsi
-	mov	rcx, rdi
+	leaq	(%rdx,%rax,8), %rdx
+	movslq	%ecx, %rcx
+	movq	$0, 8(%rsp)
+	movq	$0, 24(%rsp)
+	movq	24(%rsp), %rdi
+	movq	(%rdx), %rsi
+	movq	%rsi, (%rsp)
+	movq	(%r15), %rsi
+	addq	(%rsi,%rax,8), %rcx
+	movq	%rcx, 16(%rsp)
+	movq	16(%rsp), %rsi
+	addq	(%rsp), %rsi
+	adcq	8(%rsp), %rdi
+	incq	%rax
+	movq	%rsi, (%rdx)
+	movq	%rdi, %rcx
 .L70:
-	cmp	rax, rbp
-	mov	rdx, QWORD PTR [rbx]
+	cmpq	%rbp, %rax
+	movq	(%rbx), %rdx
 	jne	.L71
-	movsx	rcx, ecx
-	add	QWORD PTR [rdx+rax*8], rcx
-	mov	rdi, rbx
+	movslq	%ecx, %rcx
+	addq	%rcx, (%rdx,%rax,8)
+	movq	%rbx, %rdi
 	call	_ZN7Natural6shrinkEv
-	add	rsp, 40
+	addq	$40, %rsp
 	.cfi_def_cfa_offset 56
-	mov	rax, rbx
-	pop	rbx
+	movq	%rbx, %rax
+	popq	%rbx
 	.cfi_def_cfa_offset 48
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 40
-	pop	r12
+	popq	%r12
 	.cfi_def_cfa_offset 32
-	pop	r13
+	popq	%r13
 	.cfi_def_cfa_offset 24
-	pop	r14
+	popq	%r14
 	.cfi_def_cfa_offset 16
-	pop	r15
+	popq	%r15
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -790,7 +789,7 @@ _ZNK7NaturalplERKS_:
 _ZN7NaturalD2Ev:
 .LFB93:
 	.cfi_startproc
-	mov	rdi, QWORD PTR [rdi]
+	movq	(%rdi), %rdi
 	jmp	free
 	.cfi_endproc
 .LFE93:
@@ -803,26 +802,26 @@ _ZN7NaturalD2Ev:
 _ZN7NaturalpLERKS_:
 .LFB80:
 	.cfi_startproc
-	push	rbx
+	pushq	%rbx
 	.cfi_def_cfa_offset 16
 	.cfi_offset 3, -16
-	mov	rdx, rsi
-	mov	rbx, rdi
-	mov	rsi, rdi
-	sub	rsp, 32
+	movq	%rsi, %rdx
+	movq	%rdi, %rbx
+	movq	%rdi, %rsi
+	subq	$32, %rsp
 	.cfi_def_cfa_offset 48
-	lea	rdi, [rsp+16]
+	leaq	16(%rsp), %rdi
 	call	_ZNK7NaturalplERKS_
-	lea	rsi, [rsp+16]
-	mov	rdi, rbx
+	leaq	16(%rsp), %rsi
+	movq	%rbx, %rdi
 	call	_ZN7NaturalaSERKS_
-	lea	rdi, [rsp+16]
-	mov	QWORD PTR [rsp+8], rax
+	leaq	16(%rsp), %rdi
+	movq	%rax, 8(%rsp)
 	call	_ZN7NaturalD1Ev
-	mov	rax, QWORD PTR [rsp+8]
-	add	rsp, 32
+	movq	8(%rsp), %rax
+	addq	$32, %rsp
 	.cfi_def_cfa_offset 16
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -834,31 +833,31 @@ _ZN7NaturalpLERKS_:
 _ZN7NaturalppEi:
 .LFB79:
 	.cfi_startproc
-	push	rbp
+	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
-	mov	rbp, rsi
-	push	rbx
+	movq	%rsi, %rbp
+	pushq	%rbx
 	.cfi_def_cfa_offset 24
 	.cfi_offset 3, -24
-	mov	rbx, rdi
-	sub	rsp, 24
+	movq	%rdi, %rbx
+	subq	$24, %rsp
 	.cfi_def_cfa_offset 48
 	call	_ZN7NaturalC1ERKS_
-	mov	rdi, rsp
-	mov	esi, 1
+	movq	%rsp, %rdi
+	movl	$1, %esi
 	call	_ZN7NaturalC1Em
-	mov	rsi, rsp
-	mov	rdi, rbp
+	movq	%rsp, %rsi
+	movq	%rbp, %rdi
 	call	_ZN7NaturalpLERKS_
-	mov	rdi, rsp
+	movq	%rsp, %rdi
 	call	_ZN7NaturalD1Ev
-	add	rsp, 24
+	addq	$24, %rsp
 	.cfi_def_cfa_offset 24
-	mov	rax, rbx
-	pop	rbx
+	movq	%rbx, %rax
+	popq	%rbx
 	.cfi_def_cfa_offset 16
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -870,25 +869,25 @@ _ZN7NaturalppEi:
 _ZN7NaturalppEv:
 .LFB78:
 	.cfi_startproc
-	push	rbx
+	pushq	%rbx
 	.cfi_def_cfa_offset 16
 	.cfi_offset 3, -16
-	mov	rbx, rdi
-	mov	esi, 1
-	sub	rsp, 32
+	movq	%rdi, %rbx
+	movl	$1, %esi
+	subq	$32, %rsp
 	.cfi_def_cfa_offset 48
-	lea	rdi, [rsp+16]
+	leaq	16(%rsp), %rdi
 	call	_ZN7NaturalC1Em
-	lea	rsi, [rsp+16]
-	mov	rdi, rbx
+	leaq	16(%rsp), %rsi
+	movq	%rbx, %rdi
 	call	_ZN7NaturalpLERKS_
-	lea	rdi, [rsp+16]
-	mov	QWORD PTR [rsp+8], rax
+	leaq	16(%rsp), %rdi
+	movq	%rax, 8(%rsp)
 	call	_ZN7NaturalD1Ev
-	mov	rax, QWORD PTR [rsp+8]
-	add	rsp, 32
+	movq	8(%rsp), %rax
+	addq	$32, %rsp
 	.cfi_def_cfa_offset 16
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -900,78 +899,78 @@ _ZN7NaturalppEv:
 _ZNK7NaturalmlERKS_:
 .LFB75:
 	.cfi_startproc
-	push	r14
+	pushq	%r14
 	.cfi_def_cfa_offset 16
 	.cfi_offset 14, -16
-	push	r13
+	pushq	%r13
 	.cfi_def_cfa_offset 24
 	.cfi_offset 13, -24
-	mov	r13, rsi
-	push	r12
+	movq	%rsi, %r13
+	pushq	%r12
 	.cfi_def_cfa_offset 32
 	.cfi_offset 12, -32
-	xor	r12d, r12d
-	push	rbp
+	xorl	%r12d, %r12d
+	pushq	%rbp
 	.cfi_def_cfa_offset 40
 	.cfi_offset 6, -40
-	mov	rbp, rdi
-	push	rbx
+	movq	%rdi, %rbp
+	pushq	%rbx
 	.cfi_def_cfa_offset 48
 	.cfi_offset 3, -48
-	mov	rbx, rdx
-	sub	rsp, 16
+	movq	%rdx, %rbx
+	subq	$16, %rsp
 	.cfi_def_cfa_offset 64
 	call	_ZN7NaturalC1Ev
-	mov	r14, QWORD PTR [r13+0]
+	movq	0(%r13), %r14
 	jmp	.L81
 .L84:
-	mov	rdi, rsp
+	movq	%rsp, %rdi
 	call	_ZN7NaturalC1Ev
-	mov	rsi, QWORD PTR [rbx+8]
-	sub	rsi, QWORD PTR [rbx]
-	mov	rdi, rsp
-	sar	rsi, 3
-	inc	rsi
+	movq	8(%rbx), %rsi
+	subq	(%rbx), %rsi
+	movq	%rsp, %rdi
+	sarq	$3, %rsi
+	incq	%rsi
 	call	_ZN7Natural6resizeEm
-	mov	rsi, QWORD PTR [rbx]
-	mov	rdi, QWORD PTR [rbx+8]
-	mov	rcx, QWORD PTR [rsp]
+	movq	(%rbx), %rsi
+	movq	8(%rbx), %rdi
+	movq	(%rsp), %rcx
 	jmp	.L82
 .L83:
-	mov	rax, QWORD PTR [rsi]
-	add	rsi, 8
-	mul	QWORD PTR [r14]
-	add	QWORD PTR [rcx], rax
-	mov	QWORD PTR [rcx+8], rdx
-	add	rcx, 8
+	movq	(%rsi), %rax
+	addq	$8, %rsi
+	mulq	(%r14)
+	addq	%rax, (%rcx)
+	movq	%rdx, 8(%rcx)
+	addq	$8, %rcx
 .L82:
-	cmp	rsi, rdi
+	cmpq	%rdi, %rsi
 	jb	.L83
-	mov	rsi, r12
-	mov	rdi, rsp
-	add	r14, 8
+	movq	%r12, %rsi
+	movq	%rsp, %rdi
+	addq	$8, %r14
 	call	_ZN7Natural5shiftEm
-	mov	rsi, rsp
-	mov	rdi, rbp
-	inc	r12
+	movq	%rsp, %rsi
+	movq	%rbp, %rdi
+	incq	%r12
 	call	_ZN7NaturalpLERKS_
-	mov	rdi, rsp
+	movq	%rsp, %rdi
 	call	_ZN7NaturalD1Ev
 .L81:
-	cmp	r14, QWORD PTR [r13+8]
+	cmpq	8(%r13), %r14
 	jb	.L84
-	add	rsp, 16
+	addq	$16, %rsp
 	.cfi_def_cfa_offset 48
-	mov	rax, rbp
-	pop	rbx
+	movq	%rbp, %rax
+	popq	%rbx
 	.cfi_def_cfa_offset 40
-	pop	rbp
+	popq	%rbp
 	.cfi_def_cfa_offset 32
-	pop	r12
+	popq	%r12
 	.cfi_def_cfa_offset 24
-	pop	r13
+	popq	%r13
 	.cfi_def_cfa_offset 16
-	pop	r14
+	popq	%r14
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
@@ -983,26 +982,26 @@ _ZNK7NaturalmlERKS_:
 _ZN7NaturalmLERKS_:
 .LFB76:
 	.cfi_startproc
-	push	rbx
+	pushq	%rbx
 	.cfi_def_cfa_offset 16
 	.cfi_offset 3, -16
-	mov	rdx, rsi
-	mov	rbx, rdi
-	mov	rsi, rdi
-	sub	rsp, 32
+	movq	%rsi, %rdx
+	movq	%rdi, %rbx
+	movq	%rdi, %rsi
+	subq	$32, %rsp
 	.cfi_def_cfa_offset 48
-	lea	rdi, [rsp+16]
+	leaq	16(%rsp), %rdi
 	call	_ZNK7NaturalmlERKS_
-	lea	rsi, [rsp+16]
-	mov	rdi, rbx
+	leaq	16(%rsp), %rsi
+	movq	%rbx, %rdi
 	call	_ZN7NaturalaSERKS_
-	lea	rdi, [rsp+16]
-	mov	QWORD PTR [rsp+8], rax
+	leaq	16(%rsp), %rdi
+	movq	%rax, 8(%rsp)
 	call	_ZN7NaturalD1Ev
-	mov	rax, QWORD PTR [rsp+8]
-	add	rsp, 32
+	movq	8(%rsp), %rax
+	addq	$32, %rsp
 	.cfi_def_cfa_offset 16
-	pop	rbx
+	popq	%rbx
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
