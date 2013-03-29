@@ -109,7 +109,8 @@ Natural Natural::operator*(const Natural& n) const
         {
             unsigned __int128 r=*i;
             r*=*j;
-            line.begin[ii]+=r&(~0UL);
+            r+=line.begin[ii];
+            line.begin[ii]=r&(~0UL);
             line.begin[ii+1]=r>>64;
         }
         line.shift(s);

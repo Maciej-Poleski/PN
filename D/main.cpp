@@ -5,7 +5,7 @@
 using namespace std;
 
 int main(int argc, char **argv) {
-    Natural a="ffffffffffffffffffffffffffffffffffffffffffff",b=1;
-    (a+b).Print();
+    Natural a="ffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",b=1;
+    ((a)*a).Print();
     return 0;
 }
