@@ -688,17 +688,16 @@ _ZNK7NaturalplERKS_:
 	pushq	%r15
 	.cfi_def_cfa_offset 16
 	.cfi_offset 15, -16
-	movq	%rdx, %r15
 	pushq	%r14
 	.cfi_def_cfa_offset 24
 	.cfi_offset 14, -24
 	pushq	%r13
 	.cfi_def_cfa_offset 32
 	.cfi_offset 13, -32
-	movq	%rsi, %r13
 	pushq	%r12
 	.cfi_def_cfa_offset 40
 	.cfi_offset 12, -40
+	movq	%rdx, %r12
 	pushq	%rbp
 	.cfi_def_cfa_offset 48
 	.cfi_offset 6, -48
@@ -706,65 +705,91 @@ _ZNK7NaturalplERKS_:
 	.cfi_def_cfa_offset 56
 	.cfi_offset 3, -56
 	movq	%rdi, %rbx
-	subq	$40, %rsp
-	.cfi_def_cfa_offset 96
+	subq	$72, %rsp
+	.cfi_def_cfa_offset 128
+	movq	%rsi, (%rsp)
 	call	_ZN7NaturalC1Ev
-	movq	8(%r13), %r12
-	movq	8(%r15), %rbp
-	subq	0(%r13), %r12
-	subq	(%r15), %rbp
+	movq	(%rsp), %r8
+	movq	8(%r12), %rbp
+	subq	(%r12), %rbp
 	movq	(%rbx), %rdi
-	sarq	$3, %r12
+	movq	8(%r8), %r15
+	subq	(%r8), %r15
 	sarq	$3, %rbp
-	cmpq	%r12, %rbp
-	movq	%r12, %rax
+	sarq	$3, %r15
+	cmpq	%r15, %rbp
+	movq	%r15, %rax
 	cmovae	%rbp, %rax
-	leaq	8(,%rax,8), %r14
-	movq	%r14, %rsi
+	leaq	8(,%rax,8), %rdx
+	movq	%rdx, %rsi
+	movq	%rdx, 8(%rsp)
 	call	realloc
-	leaq	(%rax,%r14), %rcx
+	movq	8(%rsp), %rdx
 	movq	%rax, (%rbx)
-	movq	%rax, %rdx
-	movq	%rcx, 8(%rbx)
+	movq	%rax, %rcx
+	movq	(%rsp), %r8
+	addq	%rax, %rdx
+	movq	%rdx, 8(%rbx)
 	jmp	.L68
 .L69:
-	movq	$0, (%rdx)
-	addq	$8, %rdx
+	movq	$0, (%rcx)
+	addq	$8, %rcx
 .L68:
-	cmpq	%rcx, %rdx
+	cmpq	%rdx, %rcx
 	jb	.L69
 	movq	%rax, %rdi
-	leaq	0(,%r12,8), %rcx
-	movq	0(%r13), %rsi
+	leaq	0(,%r15,8), %rcx
+	movq	(%r8), %rsi
 	xorl	%eax, %eax
+	xorl	%edx, %edx
 	rep movsb
 	jmp	.L70
 .L71:
-	leaq	(%rdx,%rax,8), %rdx
-	movslq	%ecx, %rcx
-	movq	$0, 8(%rsp)
+	movq	(%rbx), %rcx
+	movq	%rdx, 48(%rsp)
 	movq	$0, 24(%rsp)
+	movq	$0, 40(%rsp)
 	movq	24(%rsp), %rdi
-	movq	(%rdx), %rsi
-	movq	%rsi, (%rsp)
-	movq	(%r15), %rsi
-	addq	(%rsi,%rax,8), %rcx
-	movq	%rcx, 16(%rsp)
+	movq	$0, 56(%rsp)
+	leaq	(%rcx,%rax,8), %rcx
+	movq	(%rcx), %rsi
+	movq	%rsi, 16(%rsp)
+	movq	(%r12), %rsi
+	movq	(%rsi,%rax,8), %rsi
+	movq	%rsi, 32(%rsp)
 	movq	16(%rsp), %rsi
-	addq	(%rsp), %rsi
-	adcq	8(%rsp), %rdi
+	addq	32(%rsp), %rsi
+	adcq	40(%rsp), %rdi
+	addq	48(%rsp), %rsi
+	adcq	56(%rsp), %rdi
 	incq	%rax
-	movq	%rsi, (%rdx)
-	movq	%rdi, %rcx
+	movq	%rsi, (%rcx)
+	movq	%rdi, %rdx
 .L70:
 	cmpq	%rbp, %rax
-	movq	(%rbx), %rdx
 	jne	.L71
-	movslq	%ecx, %rcx
-	addq	%rcx, (%rdx,%rax,8)
+	cltq
+	xorl	%ecx, %ecx
+	salq	$3, %rax
+	jmp	.L72
+.L73:
+	leaq	(%rcx,%rax), %rdx
+	addq	(%rbx), %rdx
+	xorl	%r14d, %r14d
+	movq	%r14, %rdi
+	movq	(%rdx), %r13
+	movq	%r13, %rsi
+	addq	$1, %rsi
+	adcq	$0, %rdi
+	movq	%rsi, (%rdx)
+	addq	$8, %rcx
+	movq	%rdi, %rdx
+.L72:
+	testq	%rdx, %rdx
+	jne	.L73
 	movq	%rbx, %rdi
 	call	_ZN7Natural6shrinkEv
-	addq	$40, %rsp
+	addq	$72, %rsp
 	.cfi_def_cfa_offset 56
 	movq	%rbx, %rax
 	popq	%rbx
@@ -922,8 +947,8 @@ _ZNK7NaturalmlERKS_:
 	.cfi_def_cfa_offset 64
 	call	_ZN7NaturalC1Ev
 	movq	0(%r13), %r14
-	jmp	.L81
-.L84:
+	jmp	.L83
+.L86:
 	movq	%rsp, %rdi
 	call	_ZN7NaturalC1Ev
 	movq	8(%rbx), %rsi
@@ -935,17 +960,17 @@ _ZNK7NaturalmlERKS_:
 	movq	(%rbx), %rsi
 	movq	8(%rbx), %rdi
 	movq	(%rsp), %rcx
-	jmp	.L82
-.L83:
+	jmp	.L84
+.L85:
 	movq	(%rsi), %rax
 	addq	$8, %rsi
 	mulq	(%r14)
 	addq	%rax, (%rcx)
 	movq	%rdx, 8(%rcx)
 	addq	$8, %rcx
-.L82:
+.L84:
 	cmpq	%rdi, %rsi
-	jb	.L83
+	jb	.L85
 	movq	%r12, %rsi
 	movq	%rsp, %rdi
 	addq	$8, %r14
@@ -956,9 +981,9 @@ _ZNK7NaturalmlERKS_:
 	call	_ZN7NaturalpLERKS_
 	movq	%rsp, %rdi
 	call	_ZN7NaturalD1Ev
-.L81:
+.L83:
 	cmpq	8(%r13), %r14
-	jb	.L84
+	jb	.L86
 	addq	$16, %rsp
 	.cfi_def_cfa_offset 48
 	movq	%rbp, %rax

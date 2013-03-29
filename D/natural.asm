@@ -1,123 +1,96 @@
 
 section .text
 
+; RDI nie musi wskazywać na istniejącą lokalizacje!!!!! (skanujemy od tyłu)
 _ZL19parseBigendianQwordPKci:
-.LFB59:
-	.cfi_startproc
-	xor	dword edx, edx
-	xor	dword eax, eax
-	jmp	dword _L2
-_L5:
-	movq	rcx, rdx
-	negq	rcx
-	movsb	dword [rdi+rcx+15], r8d
-	cmp	byte r8b, 57
-	jg	_L3
-	sub	dword r8d, 48
-	jmp	dword _L6
-_L3:
-	sub	dword r8d, 87
-_L6:
-	lea	dword ecx, [rdx*4+0]
-	movslq	r8d, r8
-	incq	rdx
-	salq	cl, r8
-	orq	r8, rax
-_L2:
-	cmp	dword esi, edx
-	jg	_L5
-	ret
-	.cfi_endproc
-.LFE59:
+        xor     edx, edx        ; i
+        xor     eax, eax        ; result
+        jmp     .check
+.for:
+        mov     rcx, rdx        
+        neg     rcx     ; rcx=-i (U2 !!!!!!!!!!!!)
+        movsx   r8d, BYTE PTR [rdi+15+rcx]      ; char=n[15-i]
+        cmp     r8b, 57 ; char, '9'
+        jg      .char
+        sub     r8d, 48 ; char=char-'0'
+        jmp     .append_to_result
+.char:
+        sub     r8d, 87 ; char=char-'a'+10
+        ; now we have correct nibble numeric value
+        
+.append_to_result:
+        lea     ecx, [rdx*4]  ; ecx=i*4
+        movsx   r8, r8d
+        inc     rdx     ; ++i
+        sal     r8, cl  ; char<<=i*4
+        or      rax, r8 ; znak doklejony do wyniku
+.check:
+        cmp     esi, edx        ; length, i
+        jg      .for
+        ret
 
 align 2
 global	_ZN7Natural5shiftEm
 
 _ZN7Natural5shiftEm:
-.LFB61:
-	.cfi_startproc
-	pushq	r14
-	.cfi_def_cfa_offset 16
-	.cfi_offset 14, -16
-	movq	r14, rsi
-	pushq	r13
-	.cfi_def_cfa_offset 24
-	.cfi_offset 13, -24
-	pushq	r12
-	.cfi_def_cfa_offset 32
-	.cfi_offset 12, -32
-	pushq	rbp
-	.cfi_def_cfa_offset 40
-	.cfi_offset 6, -40
-	movq	rbp, rdi
-	pushq	rbx
-	.cfi_def_cfa_offset 48
-	.cfi_offset 3, -48
-	movq	r12, [rdi]
-	movq	rbx, [rdi+8]
-	subq	r12, rbx
-	sarq	3, rbx
-	leaq		[rbx+rsi], r13
-	salq	3, r13
-	movq	rdi, r13
-	call	dword malloc
-	addq	rax, r13
-	movq	[rbp+0], rax
-	xor	dword edx, edx
-	movq	[rbp+8], r13
-	jmp	dword _L8
-_L9:
-	movq	[rax+rdx*8], 0
-	incq	rdx
-_L8:
-	cmpq	r14, rdx
-	jne	_L9
-	leaq		[rax+rdx*8], rdx
-	xor	dword eax, eax
-	jmp	dword _L10
-_L11:
-	movq	rcx, [r12+rax*8]
-	movq	[rdx+rax*8], rcx
-	incq	rax
-_L10:
-	cmpq	rbx, rax
-	jne	_L11
-	popq	rbx
-	.cfi_def_cfa_offset 40
-	popq	rbp
-	.cfi_def_cfa_offset 32
-	movq	rdi, r12
-	popq	r12
-	.cfi_def_cfa_offset 24
-	popq	r13
-	.cfi_def_cfa_offset 16
-	popq	r14
-	.cfi_def_cfa_offset 8
-	jmp	dword free
-	.cfi_endproc
-.LFE61:
+        push    r14     ;
+        mov     r14, rsi        ; i, i
+        push    r13     ;
+        push    r12     ;
+        push    rbp     ;
+        mov     rbp, rdi        ; this, this
+        push    rbx     ;
+        mov     r12, QWORD PTR [rdi]    ; oldBegin, this_3(D)->begin
+        mov     rbx, QWORD PTR [rdi+8]  ; tmp92, this_3(D)->end
+        sub     rbx, r12        ; tmp92, oldBegin
+        sar     rbx, 3  ; tmp92,
+        lea     r13, [rbx+rsi]  ; tmp93,
+        sal     r13, 3  ; D.4776,
+        mov     rdi, r13        ;, D.4776
+        call    malloc  ;
+        add     r13, rax        ; tmp95, D.4777
+        mov     QWORD PTR [rbp+0], rax  ; this_3(D)->begin, D.4777
+        xor     edx, edx        ; ii
+        mov     QWORD PTR [rbp+8], r13  ; this_3(D)->end, tmp95
+        jmp     .L8     ;
+.L9:
+        mov     QWORD PTR [rax+rdx*8], 0        ; MEM[base: D.4777_16, index: ii_1, step: 8, offset: 0B],
+        inc     rdx     ; ii
+.L8:
+        cmp     rdx, r14        ; ii, i
+        jne     .L9     ;,
+        lea     rdx, [rax+rdx*8]        ; D.4960,
+        xor     eax, eax        ; ii
+        jmp     .L10    ;
+.L11:
+        mov     rcx, QWORD PTR [r12+rax*8]      ; D.4798, MEM[base: oldBegin_4, index: ii_2, step: 8, offset: 0B]
+        mov     QWORD PTR [rdx+rax*8], rcx      ; MEM[base: D.4960_48, index: ii_2, step: 8, offset: 0B], D.4798
+        inc     rax     ; ii
+.L10:
+        cmp     rax, rbx        ; ii, tmp92
+        jne     .L11    ;,
+        pop     rbx     ;
+        pop     rbp     ;
+        mov     rdi, r12        ;, oldBegin
+        pop     r12     ;
+        pop     r13     ;
+        pop     r14     ;
+        jmp     free    ;
 
 align 2
 global	_ZN7NaturalC2Ev
 
 _ZN7NaturalC2Ev:
-.LFB63:
-	.cfi_startproc
-	pushq	rbx
-	.cfi_def_cfa_offset 16
-	.cfi_offset 3, -16
-	movq	rbx, rdi
-	mov	dword edi, 8
-	call	dword malloc
-	leaq	[rax+8], rdx
-	movq	[rbx], rax
-	movq	[rbx+8], rdx
-	movq	[rax], 0
-	popq	rbx
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE63:
+        push    rbx     ;
+        mov     rbx, rdi        ; this, this
+        mov     edi, 8  ;,
+        call    malloc  ;
+        lea     rdx, [rax+8]    ; tmp63,
+        mov     QWORD PTR [rbx], rax    ; this_2(D)->begin, tmp62
+        mov     QWORD PTR [rbx+8], rdx  ; this_2(D)->end, tmp63
+        mov     QWORD PTR [rax], 0      ; MEM[(long unsigned int *)D.4766_1],
+        pop     rbx     ;
+        ret
 
 global	_ZN7NaturalC1Ev
 _ZN7NaturalC1Ev	equ	_ZN7NaturalC2Ev
@@ -125,33 +98,21 @@ align 2
 global	_ZN7NaturalC2Em
 
 _ZN7NaturalC2Em:
-.LFB66:
-	.cfi_startproc
-	pushq	rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	rbp, rsi
-	pushq	rbx
-	.cfi_def_cfa_offset 24
-	.cfi_offset 3, -24
-	movq	rbx, rdi
-	mov	dword edi, 8
-	pushq	rax
-	.cfi_def_cfa_offset 32
-	call	dword malloc
-	leaq	[rax+8], rdx
-	movq	[rbx], rax
-	movq	[rbx+8], rdx
-	movq	[rax], rbp
-	popq	rdx
-	.cfi_def_cfa_offset 24
-	popq	rbx
-	.cfi_def_cfa_offset 16
-	popq	rbp
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE66:
+        push    rbp     ;
+        mov     rbp, rsi        ; n, n
+        push    rbx     ;
+        mov     rbx, rdi        ; this, this
+        mov     edi, 8  ;,
+        push    rax     ;
+        call    malloc  ;
+        lea     rdx, [rax+8]    ; tmp64,
+        mov     QWORD PTR [rbx], rax    ; this_2(D)->begin, tmp63
+        mov     QWORD PTR [rbx+8], rdx  ; this_2(D)->end, tmp64
+        mov     QWORD PTR [rax], rbp    ; MEM[(long unsigned int *)D.4763_1], n
+        pop     rdx     ;
+        pop     rbx     ;
+        pop     rbp     ;
+        ret
 
 global	_ZN7NaturalC1Em
 _ZN7NaturalC1Em	equ	_ZN7NaturalC2Em
@@ -159,97 +120,73 @@ align 2
 global	_ZN7NaturalC2EPKc
 
 _ZN7NaturalC2EPKc:
-.LFB69:
-	.cfi_startproc
-	pushq	r15
-	.cfi_def_cfa_offset 16
-	.cfi_offset 15, -16
-	xor	dword eax, eax
-	orq	-1, rcx
-	pushq	r14
-	.cfi_def_cfa_offset 24
-	.cfi_offset 14, -24
-	pushq	r13
-	.cfi_def_cfa_offset 32
-	.cfi_offset 13, -32
-	xor	dword r13d, r13d
-	pushq	r12
-	.cfi_def_cfa_offset 40
-	.cfi_offset 12, -40
-	movq	r12, rsi
-	pushq	rbp
-	.cfi_def_cfa_offset 48
-	.cfi_offset 6, -48
-	movq	rbp, rdi
-	movq	rdi, rsi
-	pushq	rbx
-	.cfi_def_cfa_offset 56
-	.cfi_offset 3, -56
-	subq	24, rsp
-	.cfi_def_cfa_offset 80
-	repnz[scasb]
-	notq	rcx
-	leaq	[rcx+-1], rbx
-	test	byte bl, 15
-	movq	rax, rbx
-	setne	r13b
-	shrq	4, rax
-	addq	rax, r13
-	salq	3, r13
-	movq	rdi, r13
-	call	dword malloc
-	movq	rdx, rbx
-	movq	[rbp+0], rax
-	addq	rax, r13
-	movq	r14, rax
-	movslq	ebx, rax
-	movq	[rbp+8], r13
-	subq	rax, rdx
-	leaq	[r12+rax+-16], rax
-	xor	dword ebp, ebp
-	movq	[rsp], rdx
-	movq	[rsp+8], rax
-	jmp	dword _L18
-_L19:
-	movq	rax, [rsp]
-	movq	rdi, [rsp+8]
-	mov	dword esi, 16
-	addq	rbp, rax
-	subq	rbp, rdi
-	addq	16, rbp
-	shrq	4, rax
-	leaq		[r14+rax*8], r15
-	call	dword _ZL19parseBigendianQwordPKci
-	movq	[r15], rax
-_L18:
-	mov	dword esi, ebx
-	sub	dword esi, ebp
-	cmp	dword esi, 15
-	jg	_L19
-	test	dword esi, esi
-	jle	_L17
-	movslq	esi, rax
-	leaq	[r12+rax+-16], rdi
-	call	dword _ZL19parseBigendianQwordPKci
-	movq	[r13+-8], rax
-_L17:
-	addq	24, rsp
-	.cfi_def_cfa_offset 56
-	popq	rbx
-	.cfi_def_cfa_offset 48
-	popq	rbp
-	.cfi_def_cfa_offset 40
-	popq	r12
-	.cfi_def_cfa_offset 32
-	popq	r13
-	.cfi_def_cfa_offset 24
-	popq	r14
-	.cfi_def_cfa_offset 16
-	popq	r15
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE69:
+        push    r15     ;
+        xor     eax, eax        ; tmp172
+        or      rcx, -1 ; tmp171,
+        push    r14     ;
+        push    r13     ;
+        xor     r13d, r13d      ; tmp174
+        push    r12     ;
+        mov     r12, rsi        ; n, n
+        push    rbp     ;
+        mov     rbp, rdi        ; this, this
+        mov     rdi, rsi        ; n, n
+        push    rbx     ;
+        sub     rsp, 24 ;,
+        repnz scasb
+        not     rcx     ; tmp169
+        lea     rbx, [rcx-1]    ; l,
+        test    bl, 15  ; l,
+        mov     rax, rbx        ; tmp176, l
+        setne   r13b    ;, tmp174
+        shr     rax, 4  ; tmp176,
+        add     r13, rax        ; tmp177, tmp176
+        sal     r13, 3  ; D.4712,
+        mov     rdi, r13        ;, D.4712
+        call    malloc  ;
+        mov     rdx, rbx        ;, l
+        mov     QWORD PTR [rbp+0], rax  ; this_13(D)->begin, D.4713
+        add     r13, rax        ; D.4721, D.4713
+        mov     r14, rax        ; D.4713,
+        movsx   rax, ebx        ; D.5015, l
+        mov     QWORD PTR [rbp+8], r13  ; this_13(D)->end, D.4721
+        sub     rdx, rax        ;, D.5015
+        lea     rax, [r12-16+rax]       ;,
+        xor     ebp, ebp        ; ivtmp.92
+        mov     QWORD PTR [rsp], rdx    ; %sfp,
+        mov     QWORD PTR [rsp+8], rax  ; %sfp,
+        jmp     .L18    ;
+.L19:
+        mov     rax, QWORD PTR [rsp]    ; tmp181, %sfp
+        mov     rdi, QWORD PTR [rsp+8]  ; tmp185, %sfp
+        mov     esi, 16 ;,
+        add     rax, rbp        ; tmp181, ivtmp.92
+        sub     rdi, rbp        ; tmp185, ivtmp.92
+        add     rbp, 16 ; ivtmp.92,
+        shr     rax, 4  ; tmp181,
+        lea     r15, [r14+rax*8]        ; D.4731,
+        call    _ZL19parseBigendianQwordPKci    ;
+        mov     QWORD PTR [r15], rax    ; *D.4731_29, D.4735
+.L18:
+        mov     esi, ebx        ; i,
+        sub     esi, ebp        ; i, ivtmp.92
+        cmp     esi, 15 ; i,
+        jg      .L19    ;,
+        test    esi, esi        ; i
+        jle     .L17    ;,
+        movsx   rax, esi        ; i, i
+        lea     rdi, [r12-16+rax]       ; tmp188,
+        call    _ZL19parseBigendianQwordPKci    ;
+        mov     QWORD PTR [r13-8], rax  ; MEM[(long unsigned int *)D.4721_21 + -8B], D.4740
+.L17:
+        add     rsp, 24 ;,
+        pop     rbx     ;
+        pop     rbp     ;
+        pop     r12     ;
+        pop     r13     ;
+        pop     r14     ;
+        pop     r15     ;
+        ret
 
 global	_ZN7NaturalC1EPKc
 _ZN7NaturalC1EPKc	equ	_ZN7NaturalC2EPKc
@@ -257,40 +194,27 @@ align 2
 global	_ZN7NaturalC2ERKS_
 
 _ZN7NaturalC2ERKS_:
-.LFB72:
-	.cfi_startproc
-	pushq	r12
-	.cfi_def_cfa_offset 16
-	.cfi_offset 12, -16
-	movq	r12, rdi
-	pushq	rbp
-	.cfi_def_cfa_offset 24
-	.cfi_offset 6, -24
-	movq	rbp, rsi
-	pushq	rbx
-	.cfi_def_cfa_offset 32
-	.cfi_offset 3, -32
-	movq	rbx, [rsi+8]
-	subq	[rsi], rbx
-	andq	-8, rbx
-	movq	rdi, rbx
-	call	dword malloc
-	leaq		[rax+rbx], rdx
-	movq	[r12], rax
-	movq	rcx, rbx
-	movq	rsi, [rbp+0]
-	movq	rdi, rax
-	movq	[r12+8], rdx
-	rep[movsb]
-	popq	rbx
-	.cfi_def_cfa_offset 24
-	popq	rbp
-	.cfi_def_cfa_offset 16
-	popq	r12
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE72:
+        push    r12     ;
+        mov     r12, rdi        ; this, this
+        push    rbp     ;
+        mov     rbp, rsi        ; n, n
+        push    rbx     ;
+        mov     rbx, QWORD PTR [rsi+8]  ; D.4701, n_1(D)->end
+        sub     rbx, QWORD PTR [rsi]    ; D.4701, n_1(D)->begin
+        and     rbx, -8 ; D.4701,
+        mov     rdi, rbx        ;, D.4701
+        call    malloc  ;
+        lea     rdx, [rax+rbx]  ; tmp78,
+        mov     QWORD PTR [r12], rax    ; this_11(D)->begin, tmp77
+        mov     rcx, rbx        ; D.4701, D.4701
+        mov     rsi, QWORD PTR [rbp+0]  ; n_1(D)->begin, n_1(D)->begin
+        mov     rdi, rax        ; D.4702, tmp77
+        mov     QWORD PTR [r12+8], rdx  ; this_11(D)->end, tmp78
+        rep movsb
+        pop     rbx     ;
+        pop     rbp     ;
+        pop     r12     ;
+        ret
 
 global	_ZN7NaturalC1ERKS_
 _ZN7NaturalC1ERKS_	equ	_ZN7NaturalC2ERKS_
@@ -298,501 +222,395 @@ align 2
 global	_ZN7NaturalaSERKS_
 
 _ZN7NaturalaSERKS_:
-.LFB83:
-	.cfi_startproc
-	pushq	r12
-	.cfi_def_cfa_offset 16
-	.cfi_offset 12, -16
-	movq	r12, rsi
-	pushq	rbp
-	.cfi_def_cfa_offset 24
-	.cfi_offset 6, -24
-	movq	rbp, rdi
-	pushq	rbx
-	.cfi_def_cfa_offset 32
-	.cfi_offset 3, -32
-	movq	rdi, [rdi]
-	call	dword free
-	movq	rbx, [r12+8]
-	subq	[r12], rbx
-	andq	-8, rbx
-	movq	rdi, rbx
-	call	dword malloc
-	leaq		[rax+rbx], rdx
-	movq	[rbp+0], rax
-	movq	rdi, rax
-	movq	rsi, [r12]
-	movq	rcx, rbx
-	movq	rax, rbp
-	movq	[rbp+8], rdx
-	rep[movsb]
-	popq	rbx
-	.cfi_def_cfa_offset 24
-	popq	rbp
-	.cfi_def_cfa_offset 16
-	popq	r12
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE83:
+        push    r12     ;
+        mov     r12, rsi        ; n, n
+        push    rbp     ;
+        mov     rbp, rdi        ; this, this
+        push    rbx     ;
+        mov     rdi, QWORD PTR [rdi]    ;, this_1(D)->begin
+        call    free    ;
+        mov     rbx, QWORD PTR [r12+8]  ; D.4528, n_3(D)->end
+        sub     rbx, QWORD PTR [r12]    ; D.4528, n_3(D)->begin
+        and     rbx, -8 ; D.4528,
+        mov     rdi, rbx        ;, D.4528
+        call    malloc  ;
+        lea     rdx, [rax+rbx]  ; tmp80,
+        mov     QWORD PTR [rbp+0], rax  ; this_1(D)->begin, tmp79
+        mov     rdi, rax        ; D.4529, tmp79
+        mov     rsi, QWORD PTR [r12]    ; n_3(D)->begin, n_3(D)->begin
+        mov     rcx, rbx        ; D.4528, D.4528
+        mov     rax, rbp        ;, this
+        mov     QWORD PTR [rbp+8], rdx  ; this_1(D)->end, tmp80
+        rep movsb
+        pop     rbx     ;
+        pop     rbp     ;
+        pop     r12     ;
+        ret
 
 align 2
 global	_ZNK7NaturaleqERKS_
 
 _ZNK7NaturaleqERKS_:
-.LFB84:
-	.cfi_startproc
-	movq	r8, [rdi]
-	movq	rdx, [rdi+8]
-	xor	dword eax, eax
-	movq	rdi, [rsi]
-	movq	rcx, [rsi+8]
-	subq	r8, rdx
-	subq	rdi, rcx
-	sarq	3, rdx
-	sarq	3, rcx
-	cmpq	rcx, rdx
-	jne	_L31
-	pushq	rcx
-	.cfi_def_cfa_offset 16
-	movq	rsi, rdi
-	salq	3, rdx
-	movq	rdi, r8
-	call	dword memcmp
-	popq	rsi
-	.cfi_def_cfa_offset 8
-	test	dword eax, eax
-	sete	al
-_L31:
-	ret
-	.cfi_endproc
-.LFE84:
+        mov     r8, QWORD PTR [rdi]     ; D.4504, this_2(D)->begin
+        mov     rdx, QWORD PTR [rdi+8]  ; tmp81, this_2(D)->end
+        xor     eax, eax        ; D.4517
+        mov     rdi, QWORD PTR [rsi]    ; D.4510, n_10(D)->begin
+        mov     rcx, QWORD PTR [rsi+8]  ; tmp85, n_10(D)->end
+        sub     rdx, r8 ; tmp81, D.4504
+        sub     rcx, rdi        ; tmp85, D.4510
+        sar     rdx, 3  ; tmp81,
+        sar     rcx, 3  ; tmp85,
+        cmp     rdx, rcx        ; tmp81, tmp85
+        jne     .L31    ;,
+        push    rcx     ;
+        mov     rsi, rdi        ;, D.4510
+        sal     rdx, 3  ; tmp86,
+        mov     rdi, r8 ;, D.4504
+        call    memcmp  ;
+        pop     rsi     ;
+        test    eax, eax        ; tmp87
+        sete    al      ;, D.4517
+.L31:
+        ret
 
 align 2
 global	_ZNK7NaturalneERKS_
 
 _ZNK7NaturalneERKS_:
-.LFB74:
-	.cfi_startproc
-	pushq	r8
-	.cfi_def_cfa_offset 16
-	call	dword _ZNK7NaturaleqERKS_
-	popq	r9
-	.cfi_def_cfa_offset 8
-	xor	dword eax, 1
-	ret
-	.cfi_endproc
-.LFE74:
+        push    r8      ;
+        call    _ZNK7NaturaleqERKS_     ;
+        pop     r9      ;
+        xor     eax, 1  ; tmp64,
+        ret
 
-section ".rodata.str1.1"
-_LC0:
- db	"%lx", 0
-_LC1:
- db	"%.16lx", 0
+section .data
+_LC0: db	"%lx", 0
+_LC1: db	"%.16lx", 0
 section .text
 align 2
 global	_ZNK7Natural5PrintEv
 
 _ZNK7Natural5PrintEv:
-.LFB88:
-	.cfi_startproc
-	pushq	rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	rbp, rdi
-	mov	dword esi, _LC0
-	pushq	rbx
-	.cfi_def_cfa_offset 24
-	.cfi_offset 3, -24
-	pushq	r11
-	.cfi_def_cfa_offset 32
-	movq	rax, [rdi+8]
-	mov	dword edi, 1
-	movq	rdx, [rax+-8]
-	xor	dword eax, eax
-	call	dword __printf_chk
-	movq	rbx, [rbp+8]
-	subq	16, rbx
-	jmp	dword _L35
-_L36:
-	movq	rdx, [rbx]
-	mov	dword esi, _LC1
-	mov	dword edi, 1
-	xor	dword eax, eax
-	subq	8, rbx
-	call	dword __printf_chk
-_L35:
-	cmpq	[rbp+0], rbx
-	jae	_L36
-	popq	r10
-	.cfi_def_cfa_offset 24
-	popq	rbx
-	.cfi_def_cfa_offset 16
-	popq	rbp
-	.cfi_def_cfa_offset 8
-	mov	dword edi, 10
-	jmp	dword putchar
-	.cfi_endproc
-.LFE88:
+        push    rbp     ;
+        mov     rbp, rdi        ; this, this
+        mov     esi, OFFSET FLAT:.LC0   ;,
+        push    rbx     ;
+        push    r11     ;
+        mov     rax, QWORD PTR [rdi+8]  ; this_2(D)->end, this_2(D)->end
+        mov     edi, 1  ;,
+        mov     rdx, QWORD PTR [rax-8]  ; MEM[(long unsigned int *)D.4478_3 + -8B], MEM[(long unsigned int *)D.4478_3 + -8B]
+        xor     eax, eax        ;
+        call    __printf_chk    ;
+        mov     rbx, QWORD PTR [rbp+8]  ; i, this_2(D)->end
+        sub     rbx, 16 ; i,
+        jmp     .L35    ;
+.L36:
+        mov     rdx, QWORD PTR [rbx]    ;, MEM[base: i_1, offset: 0B]
+        mov     esi, OFFSET FLAT:.LC1   ;,
+        mov     edi, 1  ;,
+        xor     eax, eax        ;
+        sub     rbx, 8  ; i,
+        call    __printf_chk    ;
+.L35:
+        cmp     rbx, QWORD PTR [rbp+0]  ; i, this_2(D)->begin
+        jae     .L36    ;,
+        pop     r10     ;
+        pop     rbx     ;
+        pop     rbp     ;
+        mov     edi, 10 ;,
+        jmp     putchar ;
 
 align 2
 global	_ZNK7Natural4SizeEv
 
 _ZNK7Natural4SizeEv:
-.LFB89:
-	.cfi_startproc
-	movq	rcx, [rdi]
-	movq	rax, [rdi+8]
-	subq	rcx, rax
-	sarq	3, rax
-	dec	dword eax
-	movslq	eax, rdx
-	leaq		[rcx+rdx*8], rdi
-	xor	dword edx, edx
-	jmp	dword _L39
-_L41:
-	incq	rdx
-	imulq	-8, rdx, r8
-	cmpq	0, [rdi+r8+8]
-	je	_L39
-_L42:
-	mov	dword edi, esi
-	movslq	esi, rsi
-	xor	dword eax, eax
-	sal	dword edi, 6
-	movq	rdx, [rcx+rsi*8]
-	movslq	edi, rdi
-	jmp	dword _L40
-_L39:
-	mov	dword esi, eax
-	sub	dword esi, edx
-	test	dword esi, esi
-	jg	_L41
-	jmp	dword _L42
-_L43:
-	shrq	rdx
-	incq	rax
-_L40:
-	testq	rdx, rdx
-	jne	_L43
-	addq	rdi, rax
-	ret
-	.cfi_endproc
-.LFE89:
+        mov     rcx, QWORD PTR [rdi]    ; D.4450, this_2(D)->begin
+        mov     rax, QWORD PTR [rdi+8]  ; tmp108, this_2(D)->end
+        sub     rax, rcx        ; tmp108, D.4450
+        sar     rax, 3  ; tmp108,
+        dec     eax     ; D.4455
+        movsx   rdx, eax        ; D.4455, D.4455
+        lea     rdi, [rcx+rdx*8]        ; D.5107,
+        xor     edx, edx        ; ivtmp.138
+        jmp     .L39    ;
+.L41:
+        inc     rdx     ; ivtmp.138
+        imul    r8, rdx, -8     ; tmp111, ivtmp.138,
+        cmp     QWORD PTR [rdi+8+r8], 0 ; MEM[base: D.5107_61, index: D.5108_62, offset: 8B],
+        je      .L39    ;,
+.L42:
+        mov     edi, esi        ; tmp112, selectedQword
+        movsx   rsi, esi        ; selectedQword, selectedQword
+        xor     eax, eax        ; result
+        sal     edi, 6  ; tmp112,
+        mov     rdx, QWORD PTR [rcx+rsi*8]      ; n, *D.4463_24
+        movsx   rdi, edi        ; D.4469, tmp112
+        jmp     .L40    ;
+.L39:
+        mov     esi, eax        ; selectedQword, D.4455
+        sub     esi, edx        ; selectedQword, ivtmp.138
+        test    esi, esi        ; selectedQword
+        jg      .L41    ;,
+        jmp     .L42    ;
+.L43:
+        shr     rdx     ; n
+        inc     rax     ; result
+.L40:
+        test    rdx, rdx        ; n
+        jne     .L43    ;,
+        add     rax, rdi        ; tmp114, D.4469
+        ret
 
 align 2
 global	_ZNK7NaturalcvbEv
 
 _ZNK7NaturalcvbEv:
-.LFB87:
-	.cfi_startproc
-	call	dword _ZNK7Natural4SizeEv
-	testq	rax, rax
-	setne	al
-	ret
-	.cfi_endproc
-.LFE87:
+        call    _ZNK7Natural4SizeEv     ;
+        test    rax, rax        ; D.4492
+        setne   al      ;, tmp64
+        ret
 
 align 2
 global	_ZNK7NaturalltERKS_
 
 _ZNK7NaturalltERKS_:
-.LFB81:
-	.cfi_startproc
-	pushq	r12
-	.cfi_def_cfa_offset 16
-	.cfi_offset 12, -16
-	pushq	rbp
-	.cfi_def_cfa_offset 24
-	.cfi_offset 6, -24
-	movq	rbp, rsi
-	pushq	rbx
-	.cfi_def_cfa_offset 32
-	.cfi_offset 3, -32
-	movq	rbx, rdi
-	call	dword _ZNK7Natural4SizeEv
-	movq	rdi, rbp
-	movq	r12, rax
-	call	dword _ZNK7Natural4SizeEv
-	cmpq	rax, r12
-	mov	byte dl, 1
-	jb	_L47
-	mov	byte dl, 0
-	ja	_L47
-	movq	rsi, [rbx]
-	movq	rax, [rbx+8]
-	xor	dword ecx, ecx
-	subq	rsi, rax
-	sarq	3, rax
-	dec	dword eax
-	movslq	eax, rdx
-	salq	3, rdx
-	jmp	dword _L48
-_L50:
-	movq	rdi, [rbp+0]
-	movq	r8, [rsi+rdx]
-	incq	rcx
-	movq	rdi, [rdi+rdx]
-	subq	8, rdx
-	cmpq	rdi, r8
-	jb	_L53
-_L48:
-	cmp	dword eax, ecx
-	jns	_L50
-	xor	dword edx, edx
-	jmp	dword _L47
-_L53:
-	mov	byte dl, 1
-_L47:
-	popq	rbx
-	.cfi_def_cfa_offset 24
-	popq	rbp
-	.cfi_def_cfa_offset 16
-	mov	byte al, dl
-	popq	r12
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE81:
+        push    r12     ;
+        push    rbp     ;
+        mov     rbp, rsi        ; n, n
+        push    rbx     ;
+        mov     rbx, rdi        ; this, this
+        call    _ZNK7Natural4SizeEv     ;
+        mov     rdi, rbp        ;, n
+        mov     r12, rax        ; D.4549,
+        call    _ZNK7Natural4SizeEv     ;
+        cmp     r12, rax        ; D.4549, D.4550
+        mov     dl, 1   ; D.5116,
+        jb      .L47    ;,
+        mov     dl, 0   ; D.5116,
+        ja      .L47    ;,
+        mov     rsi, QWORD PTR [rbx]    ; D.5122, this_3(D)->begin
+        mov     rax, QWORD PTR [rbx+8]  ; tmp91, this_3(D)->end
+        xor     ecx, ecx        ; ivtmp.158
+        sub     rax, rsi        ; tmp91, D.5122
+        sar     rax, 3  ; tmp91,
+        dec     eax     ; D.5127
+        movsx   rdx, eax        ; D.5127, D.5127
+        sal     rdx, 3  ; ivtmp.172,
+        jmp     .L48    ;
+.L50:
+        mov     rdi, QWORD PTR [rbp+0]  ; n_5(D)->begin, n_5(D)->begin
+        mov     r8, QWORD PTR [rsi+rdx] ; D.5131, MEM[base: D.5122_39, index: ivtmp.172_60, offset: 0B]
+        inc     rcx     ; ivtmp.158
+        mov     rdi, QWORD PTR [rdi+rdx]        ; D.5134, *D.5133_52
+        sub     rdx, 8  ; ivtmp.172,
+        cmp     r8, rdi ; D.5131, D.5134
+        jb      .L53    ;,
+.L48:
+        cmp     eax, ecx        ; D.5127, ivtmp.158
+        jns     .L50    ;,
+        xor     edx, edx        ; D.5116
+        jmp     .L47    ;
+.L53:
+        mov     dl, 1   ; D.5116,
+.L47:
+        pop     rbx     ;
+        pop     rbp     ;
+        mov     al, dl  ;, D.5116
+        pop     r12     ;
+        ret
 
 align 2
 global	_ZNK7NaturalgeERKS_
 
 _ZNK7NaturalgeERKS_:
-.LFB86:
-	.cfi_startproc
-	call	dword _ZNK7NaturalltERKS_
-	xor	dword eax, 1
-	ret
-	.cfi_endproc
-.LFE86:
+        call    _ZNK7NaturalltERKS_     ;
+        xor     eax, 1  ; tmp64,
+        ret
 
 align 2
 global	_ZNK7NaturalleERKS_
 
 _ZNK7NaturalleERKS_:
-.LFB82:
-	.cfi_startproc
-	pushq	rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	rbp, rsi
-	pushq	rbx
-	.cfi_def_cfa_offset 24
-	.cfi_offset 3, -24
-	movq	rbx, rdi
-	pushq	rax
-	.cfi_def_cfa_offset 32
-	call	dword _ZNK7NaturalltERKS_
-	test	byte al, al
-	jne	_L57
-	movq	rsi, rbp
-	movq	rdi, rbx
-	popq	rbp
-	.cfi_remember_state
-	.cfi_def_cfa_offset 24
-	popq	rbx
-	.cfi_def_cfa_offset 16
-	popq	rbp
-	.cfi_def_cfa_offset 8
-	jmp	dword _ZNK7NaturaleqERKS_
-_L57:
-	.cfi_restore_state
-	popq	rbx
-	.cfi_def_cfa_offset 24
-	popq	rbx
-	.cfi_def_cfa_offset 16
-	mov	byte al, 1
-	popq	rbp
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE82:
+        push    rbp     ;
+        mov     rbp, rsi        ; n, n
+        push    rbx     ;
+        mov     rbx, rdi        ; this, this
+        push    rax     ;
+        call    _ZNK7NaturalltERKS_     ;
+        test    al, al  ; D.4543
+        jne     .L57    ;,
+        mov     rsi, rbp        ;, n
+        mov     rdi, rbx        ;, this
+        pop     rbp     ;
+        pop     rbx     ;
+        pop     rbp     ;
+        jmp     _ZNK7NaturaleqERKS_     ;
+.L57:
+        pop     rbx     ;
+        pop     rbx     ;
+        mov     al, 1   ;,
+        pop     rbp     ;
+        ret
 
 align 2
 global	_ZNK7NaturalgtERKS_
 
 _ZNK7NaturalgtERKS_:
-.LFB85:
-	.cfi_startproc
-	pushq	rax
-	.cfi_def_cfa_offset 16
-	call	dword _ZNK7NaturalleERKS_
-	popq	rdx
-	.cfi_def_cfa_offset 8
-	xor	dword eax, 1
-	ret
-	.cfi_endproc
-.LFE85:
+        push    rax     ;
+        call    _ZNK7NaturalleERKS_     ;
+        pop     rdx     ;
+        xor     eax, 1  ; tmp64,
+        ret
 
 align 2
 global	_ZN7Natural6resizeEm
 
 _ZN7Natural6resizeEm:
-.LFB90:
-	.cfi_startproc
-	pushq	rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	leaq	[rsi*8+0], rbp
-	pushq	rbx
-	.cfi_def_cfa_offset 24
-	.cfi_offset 3, -24
-	movq	rbx, rdi
-	movq	rsi, rbp
-	pushq	rcx
-	.cfi_def_cfa_offset 32
-	movq	rdi, [rdi]
-	call	dword realloc
-	addq	rax, rbp
-	movq	[rbx], rax
-	movq	[rbx+8], rbp
-	popq	rsi
-	.cfi_def_cfa_offset 24
-	popq	rbx
-	.cfi_def_cfa_offset 16
-	popq	rbp
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE90:
+        push    rbp     ;
+        lea     rbp, [0+rsi*8]  ; D.4444,
+        push    rbx     ;
+        mov     rbx, rdi        ; this, this
+        mov     rsi, rbp        ;, D.4444
+        push    rcx     ;
+        mov     rdi, QWORD PTR [rdi]    ;, this_3(D)->begin
+        call    realloc ;
+        add     rbp, rax        ; tmp65, D.4446
+        mov     QWORD PTR [rbx], rax    ; this_3(D)->begin, D.4446
+        mov     QWORD PTR [rbx+8], rbp  ; this_3(D)->end, tmp65
+        pop     rsi     ;
+        pop     rbx     ;
+        pop     rbp     ;
+        ret
 
 align 2
 global	_ZN7Natural6shrinkEv
 
 _ZN7Natural6shrinkEv:
-.LFB91:
-	.cfi_startproc
-	movq	rdx, [rdi]
-	addq	8, rdx
-_L66:
-	movq	rax, [rdi+8]
-	cmpq	rax, rdx
-	jae	_L63
-	cmpq	0, [rax+-8]
-	jne	_L63
-	subq	8, rax
-	movq	[rdi+8], rax
-	jmp	dword _L66
-_L63:
-	ret
-	.cfi_endproc
-.LFE91:
+        mov     rdx, QWORD PTR [rdi]    ; D.4438, this_2(D)->begin
+        add     rdx, 8  ; D.4438,
+.L66:
+        mov     rax, QWORD PTR [rdi+8]  ; D.4439, this_2(D)->end
+        cmp     rdx, rax        ; D.4438, D.4439
+        jae     .L63    ;,
+        cmp     QWORD PTR [rax-8], 0    ; MEM[(long unsigned int *)D.4439_5 + -8B],
+        jne     .L63    ;,
+        sub     rax, 8  ; tmp66,
+        mov     QWORD PTR [rdi+8], rax  ; this_2(D)->end, tmp66
+        jmp     .L66    ;
+.L63:
+        ret
 
 align 2
 global	_ZNK7NaturalplERKS_
 
 _ZNK7NaturalplERKS_:
-.LFB77:
-	.cfi_startproc
-	pushq	r15
-	.cfi_def_cfa_offset 16
-	.cfi_offset 15, -16
-	movq	r15, rdx
-	pushq	r14
-	.cfi_def_cfa_offset 24
-	.cfi_offset 14, -24
-	pushq	r13
-	.cfi_def_cfa_offset 32
-	.cfi_offset 13, -32
-	movq	r13, rsi
-	pushq	r12
-	.cfi_def_cfa_offset 40
-	.cfi_offset 12, -40
-	pushq	rbp
-	.cfi_def_cfa_offset 48
-	.cfi_offset 6, -48
-	pushq	rbx
-	.cfi_def_cfa_offset 56
-	.cfi_offset 3, -56
-	movq	rbx, rdi
-	subq	40, rsp
-	.cfi_def_cfa_offset 96
-	call	dword _ZN7NaturalC1Ev
-	movq	r12, [r13+8]
-	movq	rbp, [r15+8]
-	subq	[r13+0], r12
-	subq	[r15], rbp
-	movq	rdi, [rbx]
-	sarq	3, r12
-	sarq	3, rbp
-	cmpq	r12, rbp
-	movq	rax, r12
-	cmovae	rax, rbp
-	leaq	[rax*8+8], r14
-	movq	rsi, r14
-	call	dword realloc
-	leaq		[rax+r14], rcx
-	movq	[rbx], rax
-	movq	rdx, rax
-	movq	[rbx+8], rcx
-	jmp	dword _L68
-_L69:
-	movq	[rdx], 0
-	addq	8, rdx
-_L68:
-	cmpq	rcx, rdx
-	jb	_L69
-	movq	rdi, rax
-	leaq	[r12*8+0], rcx
-	movq	rsi, [r13+0]
-	xor	dword eax, eax
-	rep[movsb]
-	jmp	dword _L70
-_L71:
-	leaq		[rdx+rax*8], rdx
-	movslq	ecx, rcx
-	movq	[rsp+8], 0
-	movq	[rsp+24], 0
-	movq	rdi, [rsp+24]
-	movq	rsi, [rdx]
-	movq	[rsp], rsi
-	movq	rsi, [r15]
-	addq		[rsi+rax*8], rcx
-	movq	[rsp+16], rcx
-	movq	rsi, [rsp+16]
-	addq	[rsp], rsi
-	adcq	[rsp+8], rdi
-	incq	rax
-	movq	[rdx], rsi
-	movq	rcx, rdi
-_L70:
-	cmpq	rbp, rax
-	movq	rdx, [rbx]
-	jne	_L71
-	movslq	ecx, rcx
-	addq	rcx, 	[rdx+rax*8]
-	movq	rdi, rbx
-	call	dword _ZN7Natural6shrinkEv
-	addq	40, rsp
-	.cfi_def_cfa_offset 56
-	movq	rax, rbx
-	popq	rbx
-	.cfi_def_cfa_offset 48
-	popq	rbp
-	.cfi_def_cfa_offset 40
-	popq	r12
-	.cfi_def_cfa_offset 32
-	popq	r13
-	.cfi_def_cfa_offset 24
-	popq	r14
-	.cfi_def_cfa_offset 16
-	popq	r15
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE77:
+        push    r15     ;
+        push    r14     ;
+        push    r13     ;
+        push    r12     ;
+        mov     r12, rdx        ; n, n
+        push    rbp     ;
+        push    rbx     ;
+        mov     rbx, rdi        ; <retval>, .result_ptr
+        sub     rsp, 72 ;,
+        mov     QWORD PTR [rsp], rsi    ;, tmp37
+        call    _ZN7NaturalC1Ev ;
+        mov     r8, QWORD PTR [rsp]     ;,
+        mov     rbp, QWORD PTR [r12+8]  ; tmp120, n_16(D)->end
+        sub     rbp, QWORD PTR [r12]    ; tmp120, n_16(D)->begin
+        mov     rdi, QWORD PTR [rbx]    ;, <retval>_7(D)->begin
+        mov     r15, QWORD PTR [r8+8]   ; tmp116, this_8(D)->end
+        sub     r15, QWORD PTR [r8]     ; tmp116, this_8(D)->begin
+        sar     rbp, 3  ; tmp120,
+        sar     r15, 3  ; tmp116,
+        cmp     rbp, r15        ; tmp120, tmp116
+        mov     rax, r15        ; tmp121, tmp116
+        cmovae  rax, rbp        ; tmp120,, tmp121
+        lea     rdx, [8+rax*8]  ; D.4612,
+        mov     rsi, rdx        ;, D.4612
+        mov     QWORD PTR [rsp+8], rdx  ;,
+        call    realloc ;
+        mov     rdx, QWORD PTR [rsp+8]  ;,
+        mov     QWORD PTR [rbx], rax    ; <retval>_7(D)->begin, i
+        mov     rcx, rax        ; i, i
+        mov     r8, QWORD PTR [rsp]     ;,
+        add     rdx, rax        ; D.4617, i
+        mov     QWORD PTR [rbx+8], rdx  ; <retval>_7(D)->end, D.4617
+        jmp     .L68    ;
+.L69:
+        mov     QWORD PTR [rcx], 0      ; MEM[base: i_1, offset: 0B],
+        add     rcx, 8  ; i,
+.L68:
+        cmp     rcx, rdx        ; i, D.4617
+        jb      .L69    ;,
+        mov     rdi, rax        ; i, i
+        lea     rcx, [0+r15*8]  ; tmp123,
+        mov     rsi, QWORD PTR [r8]     ; this_8(D)->begin, this_8(D)->begin
+        xor     eax, eax        ; ivtmp.203
+        xor     edx, edx        ; carry
+        rep movsb
+        jmp     .L70    ;
+.L71:
+        mov     rcx, QWORD PTR [rbx]    ; <retval>_7(D)->begin, <retval>_7(D)->begin
+        mov     QWORD PTR [rsp+48], rdx ; %sfp, carry
+        mov     QWORD PTR [rsp+24], 0   ; %sfp,
+        mov     QWORD PTR [rsp+40], 0   ; %sfp,
+        mov     rdi, QWORD PTR [rsp+24] ; r, %sfp
+        mov     QWORD PTR [rsp+56], 0   ; %sfp,
+        lea     rcx, [rcx+rax*8]        ; D.4633,
+        mov     rsi, QWORD PTR [rcx]    ;, *D.4633_49
+        mov     QWORD PTR [rsp+16], rsi ; %sfp,
+        mov     rsi, QWORD PTR [r12]    ; n_16(D)->begin, n_16(D)->begin
+        mov     rsi, QWORD PTR [rsi+rax*8]      ;, *D.4635_55
+        mov     QWORD PTR [rsp+32], rsi ; %sfp,
+        mov     rsi, QWORD PTR [rsp+16] ; r, %sfp
+        add     rsi, QWORD PTR [rsp+32] ; r, %sfp
+        adc     rdi, QWORD PTR [rsp+40] ; r, %sfp
+        add     rsi, QWORD PTR [rsp+48] ; r, %sfp
+        adc     rdi, QWORD PTR [rsp+56] ; r, %sfp
+        inc     rax     ; ivtmp.203
+        mov     QWORD PTR [rcx], rsi    ; *D.4633_49, r
+        mov     rdx, rdi        ; carry, r
+.L70:
+        cmp     rax, rbp        ; ivtmp.203, tmp120
+        jne     .L71    ;,
+        cdqe
+        xor     ecx, ecx        ; ivtmp.199
+        sal     rax, 3  ; D.5192,
+        jmp     .L72    ;
+.L73:
+        lea     rdx, [rcx+rax]  ; D.4633,
+        add     rdx, QWORD PTR [rbx]    ; D.4633, <retval>_7(D)->begin
+        xor     r14d, r14d      ; r
+        mov     rdi, r14        ; r, r
+        mov     r13, QWORD PTR [rdx]    ; r, *D.4633_73
+        mov     rsi, r13        ; r, r
+        add     rsi, 1  ; r,
+        adc     rdi, 0  ; r,
+        mov     QWORD PTR [rdx], rsi    ; *D.4633_73, r
+        add     rcx, 8  ; ivtmp.199,
+        mov     rdx, rdi        ; carry, r
+.L72:
+        test    rdx, rdx        ; carry
+        jne     .L73    ;,
+        mov     rdi, rbx        ;, <retval>
+        call    _ZN7Natural6shrinkEv    ;
+        add     rsp, 72 ;,
+        mov     rax, rbx        ;, <retval>
+        pop     rbx     ;
+        pop     rbp     ;
+        pop     r12     ;
+        pop     r13     ;
+        pop     r14     ;
+        pop     r15     ;
+        ret
 
 align 2
 global	_ZN7NaturalD2Ev
 
 _ZN7NaturalD2Ev:
-.LFB93:
-	.cfi_startproc
-	movq	rdi, [rdi]
-	jmp	dword free
-	.cfi_endproc
-.LFE93:
+        mov     rdi, QWORD PTR [rdi]    ;, this_1(D)->begin
+        jmp     free    ;
 
 global	_ZN7NaturalD1Ev
 _ZN7NaturalD1Ev	equ	_ZN7NaturalD2Ev
@@ -800,212 +618,150 @@ align 2
 global	_ZN7NaturalpLERKS_
 
 _ZN7NaturalpLERKS_:
-.LFB80:
-	.cfi_startproc
-	pushq	rbx
-	.cfi_def_cfa_offset 16
-	.cfi_offset 3, -16
-	movq	rdx, rsi
-	movq	rbx, rdi
-	movq	rsi, rdi
-	subq	32, rsp
-	.cfi_def_cfa_offset 48
-	leaq	[rsp+16], rdi
-	call	dword _ZNK7NaturalplERKS_
-	leaq	[rsp+16], rsi
-	movq	rdi, rbx
-	call	dword _ZN7NaturalaSERKS_
-	leaq	[rsp+16], rdi
-	movq	[rsp+8], rax
-	call	dword _ZN7NaturalD1Ev
-	movq	rax, [rsp+8]
-	addq	32, rsp
-	.cfi_def_cfa_offset 16
-	popq	rbx
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE80:
+        push    rbx     ;
+        mov     rdx, rsi        ; n, n
+        mov     rbx, rdi        ; this, this
+        mov     rsi, rdi        ;, this
+        sub     rsp, 32 ;,
+        lea     rdi, [rsp+16]   ;,
+        call    _ZNK7NaturalplERKS_     ;
+        lea     rsi, [rsp+16]   ;,
+        mov     rdi, rbx        ;, this
+        call    _ZN7NaturalaSERKS_      ;
+        lea     rdi, [rsp+16]   ;,
+        mov     QWORD PTR [rsp+8], rax  ;,
+        call    _ZN7NaturalD1Ev ;
+        mov     rax, QWORD PTR [rsp+8]  ;,
+        add     rsp, 32 ;,
+        pop     rbx     ;
+        ret
 
 align 2
 global	_ZN7NaturalppEi
 
 _ZN7NaturalppEi:
-.LFB79:
-	.cfi_startproc
-	pushq	rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	movq	rbp, rsi
-	pushq	rbx
-	.cfi_def_cfa_offset 24
-	.cfi_offset 3, -24
-	movq	rbx, rdi
-	subq	24, rsp
-	.cfi_def_cfa_offset 48
-	call	dword _ZN7NaturalC1ERKS_
-	movq	rdi, rsp
-	mov	dword esi, 1
-	call	dword _ZN7NaturalC1Em
-	movq	rsi, rsp
-	movq	rdi, rbp
-	call	dword _ZN7NaturalpLERKS_
-	movq	rdi, rsp
-	call	dword _ZN7NaturalD1Ev
-	addq	24, rsp
-	.cfi_def_cfa_offset 24
-	movq	rax, rbx
-	popq	rbx
-	.cfi_def_cfa_offset 16
-	popq	rbp
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE79:
+        push    rbp     ;
+        mov     rbp, rsi        ; this, this
+        push    rbx     ;
+        mov     rbx, rdi        ; <retval>, .result_ptr
+        sub     rsp, 24 ;,
+        call    _ZN7NaturalC1ERKS_      ;
+        mov     rdi, rsp        ;,
+        mov     esi, 1  ;,
+        call    _ZN7NaturalC1Em ;
+        mov     rsi, rsp        ;,
+        mov     rdi, rbp        ;, this
+        call    _ZN7NaturalpLERKS_      ;
+        mov     rdi, rsp        ;,
+        call    _ZN7NaturalD1Ev ;
+        add     rsp, 24 ;,
+        mov     rax, rbx        ;, <retval>
+        pop     rbx     ;
+        pop     rbp     ;
+        ret
 
 align 2
 global	_ZN7NaturalppEv
 
 _ZN7NaturalppEv:
-.LFB78:
-	.cfi_startproc
-	pushq	rbx
-	.cfi_def_cfa_offset 16
-	.cfi_offset 3, -16
-	movq	rbx, rdi
-	mov	dword esi, 1
-	subq	32, rsp
-	.cfi_def_cfa_offset 48
-	leaq	[rsp+16], rdi
-	call	dword _ZN7NaturalC1Em
-	leaq	[rsp+16], rsi
-	movq	rdi, rbx
-	call	dword _ZN7NaturalpLERKS_
-	leaq	[rsp+16], rdi
-	movq	[rsp+8], rax
-	call	dword _ZN7NaturalD1Ev
-	movq	rax, [rsp+8]
-	addq	32, rsp
-	.cfi_def_cfa_offset 16
-	popq	rbx
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE78:
+        push    rbx     ;
+        mov     rbx, rdi        ; this, this
+        mov     esi, 1  ;,
+        sub     rsp, 32 ;,
+        lea     rdi, [rsp+16]   ;,
+        call    _ZN7NaturalC1Em ;
+        lea     rsi, [rsp+16]   ;,
+        mov     rdi, rbx        ;, this
+        call    _ZN7NaturalpLERKS_      ;
+        lea     rdi, [rsp+16]   ;,
+        mov     QWORD PTR [rsp+8], rax  ;,
+        call    _ZN7NaturalD1Ev ;
+        mov     rax, QWORD PTR [rsp+8]  ;,
+        add     rsp, 32 ;,
+        pop     rbx     ;
+        ret
 
 align 2
 global	_ZNK7NaturalmlERKS_
 
 _ZNK7NaturalmlERKS_:
-.LFB75:
-	.cfi_startproc
-	pushq	r14
-	.cfi_def_cfa_offset 16
-	.cfi_offset 14, -16
-	pushq	r13
-	.cfi_def_cfa_offset 24
-	.cfi_offset 13, -24
-	movq	r13, rsi
-	pushq	r12
-	.cfi_def_cfa_offset 32
-	.cfi_offset 12, -32
-	xor	dword r12d, r12d
-	pushq	rbp
-	.cfi_def_cfa_offset 40
-	.cfi_offset 6, -40
-	movq	rbp, rdi
-	pushq	rbx
-	.cfi_def_cfa_offset 48
-	.cfi_offset 3, -48
-	movq	rbx, rdx
-	subq	16, rsp
-	.cfi_def_cfa_offset 64
-	call	dword _ZN7NaturalC1Ev
-	movq	r14, [r13+0]
-	jmp	dword _L81
-_L84:
-	movq	rdi, rsp
-	call	dword _ZN7NaturalC1Ev
-	movq	rsi, [rbx+8]
-	subq	[rbx], rsi
-	movq	rdi, rsp
-	sarq	3, rsi
-	incq	rsi
-	call	dword _ZN7Natural6resizeEm
-	movq	rsi, [rbx]
-	movq	rdi, [rbx+8]
-	movq	rcx, [rsp]
-	jmp	dword _L82
-_L83:
-	movq	rax, [rsi]
-	addq	8, rsi
-	mulq	[r14]
-	addq	rax, [rcx]
-	movq	[rcx+8], rdx
-	addq	8, rcx
-_L82:
-	cmpq	rdi, rsi
-	jb	_L83
-	movq	rsi, r12
-	movq	rdi, rsp
-	addq	8, r14
-	call	dword _ZN7Natural5shiftEm
-	movq	rsi, rsp
-	movq	rdi, rbp
-	incq	r12
-	call	dword _ZN7NaturalpLERKS_
-	movq	rdi, rsp
-	call	dword _ZN7NaturalD1Ev
-_L81:
-	cmpq	[r13+8], r14
-	jb	_L84
-	addq	16, rsp
-	.cfi_def_cfa_offset 48
-	movq	rax, rbp
-	popq	rbx
-	.cfi_def_cfa_offset 40
-	popq	rbp
-	.cfi_def_cfa_offset 32
-	popq	r12
-	.cfi_def_cfa_offset 24
-	popq	r13
-	.cfi_def_cfa_offset 16
-	popq	r14
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE75:
+        push    r14     ;
+        push    r13     ;
+        mov     r13, rsi        ; this, this
+        push    r12     ;
+        xor     r12d, r12d      ; ivtmp.245
+        push    rbp     ;
+        mov     rbp, rdi        ; <retval>, .result_ptr
+        push    rbx     ;
+        mov     rbx, rdx        ; n, n
+        sub     rsp, 16 ;,
+        call    _ZN7NaturalC1Ev ;
+        mov     r14, QWORD PTR [r13+0]  ; i, this_7(D)->begin
+        jmp     .L83    ;
+.L86:
+        mov     rdi, rsp        ;,
+        call    _ZN7NaturalC1Ev ;
+        mov     rsi, QWORD PTR [rbx+8]  ; tmp93, n_11(D)->end
+        sub     rsi, QWORD PTR [rbx]    ; tmp93, n_11(D)->begin
+        mov     rdi, rsp        ;,
+        sar     rsi, 3  ; tmp93,
+        inc     rsi     ; tmp94
+        call    _ZN7Natural6resizeEm    ;
+        mov     rsi, QWORD PTR [rbx]    ; j, n_11(D)->begin
+        mov     rdi, QWORD PTR [rbx+8]  ; D.4659, n_11(D)->end
+        mov     rcx, QWORD PTR [rsp]    ; ivtmp.241, line.begin
+        jmp     .L84    ;
+.L85:
+        mov     rax, QWORD PTR [rsi]    ; D.4673, MEM[base: j_4, offset: 0B]
+        add     rsi, 8  ; j,
+        mul     QWORD PTR [r14] ; MEM[base: i_2, offset: 0B]
+        add     QWORD PTR [rcx], rax    ; MEM[base: D.5243_67, offset: 0B], r
+        mov     QWORD PTR [rcx+8], rdx  ; MEM[base: D.5243_67, offset: 8B], tmp105
+        add     rcx, 8  ; ivtmp.241,
+.L84:
+        cmp     rsi, rdi        ; j, D.4659
+        jb      .L85    ;,
+        mov     rsi, r12        ;, ivtmp.245
+        mov     rdi, rsp        ;,
+        add     r14, 8  ; i,
+        call    _ZN7Natural5shiftEm     ;
+        mov     rsi, rsp        ;,
+        mov     rdi, rbp        ;, <retval>
+        inc     r12     ; ivtmp.245
+        call    _ZN7NaturalpLERKS_      ;
+        mov     rdi, rsp        ;,
+        call    _ZN7NaturalD1Ev ;
+.L83:
+        cmp     r14, QWORD PTR [r13+8]  ; i, this_7(D)->end
+        jb      .L86    ;,
+        add     rsp, 16 ;,
+        mov     rax, rbp        ;, <retval>
+        pop     rbx     ;
+        pop     rbp     ;
+        pop     r12     ;
+        pop     r13     ;
+        pop     r14     ;
+        ret
 
 align 2
 global	_ZN7NaturalmLERKS_
 
 _ZN7NaturalmLERKS_:
-.LFB76:
-	.cfi_startproc
-	pushq	rbx
-	.cfi_def_cfa_offset 16
-	.cfi_offset 3, -16
-	movq	rdx, rsi
-	movq	rbx, rdi
-	movq	rsi, rdi
-	subq	32, rsp
-	.cfi_def_cfa_offset 48
-	leaq	[rsp+16], rdi
-	call	dword _ZNK7NaturalmlERKS_
-	leaq	[rsp+16], rsi
-	movq	rdi, rbx
-	call	dword _ZN7NaturalaSERKS_
-	leaq	[rsp+16], rdi
-	movq	[rsp+8], rax
-	call	dword _ZN7NaturalD1Ev
-	movq	rax, [rsp+8]
-	addq	32, rsp
-	.cfi_def_cfa_offset 16
-	popq	rbx
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE76:
+        push    rbx     ;
+        mov     rdx, rsi        ; n, n
+        mov     rbx, rdi        ; this, this
+        mov     rsi, rdi        ;, this
+        sub     rsp, 32 ;,
+        lea     rdi, [rsp+16]   ;,
+        call    _ZNK7NaturalmlERKS_     ;
+        lea     rsi, [rsp+16]   ;,
+        mov     rdi, rbx        ;, this
+        call    _ZN7NaturalaSERKS_      ;
+        lea     rdi, [rsp+16]   ;,
+        mov     QWORD PTR [rsp+8], rax  ;,
+        call    _ZN7NaturalD1Ev ;
+        mov     rax, QWORD PTR [rsp+8]  ;,
+        add     rsp, 32 ;,
+        pop     rbx     ;
+        ret
 
-
-section ".note.GNU-stack"

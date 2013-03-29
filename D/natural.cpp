@@ -133,17 +133,24 @@ Natural Natural::operator+(const Natural& n) const
     result.end=result.begin+maxSize+1;
     for(unsigned long *i=result.begin;i<result.end;++i)
         *i=0UL;
-    int carry=0;
+    unsigned long carry=0;
     memcpy(result.begin,begin,leftSize*(sizeof(unsigned long)));
     int i;
     for(i=0;i<rightSize;++i)
     {
         unsigned __int128 r=result.begin[i];
-        r+=n.begin[i]+carry;
+        r+=n.begin[i];
+        r+=carry;
         result.begin[i]=r&(~(0UL));
         carry=r>>64;
     }
-    result.begin[i]+=carry;
+    for(;carry;++i)
+    {
+        unsigned __int128 r=result.begin[i];
+        r+=carry;
+        result.begin[i]=r&(~(0UL));
+        carry=r>>64;
+    }
     result.shrink();
     return result;
 }
