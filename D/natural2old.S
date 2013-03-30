@@ -727,62 +727,68 @@ _ZN7NaturalppEv:
 	.globl	_ZNK7NaturalmlERKS_
 	.type	_ZNK7NaturalmlERKS_, @function
 _ZNK7NaturalmlERKS_:
+	push	r15	;
+	mov	r15, rsi	; this, this
 	push	r14	;
 	push	r13	;
-	mov	r13, rsi	; this, this
 	push	r12	;
 	xor	r12d, r12d	; ivtmp.245
 	push	rbp	;
-	mov	rbp, rdi	; <retval>, .result_ptr
 	push	rbx	;
 	mov	rbx, rdx	; n, n
-	sub	rsp, 16	;,
+	sub	rsp, 40	;,
+	mov	QWORD PTR [rsp+8], rdi	; %sfp, .result_ptr
 	call	_ZN7NaturalC1Ev	;
-	mov	r14, QWORD PTR [r13+0]	; i, this_7(D)->begin
+	mov	rbp, QWORD PTR [r15]	; i, this_7(D)->begin
 	jmp	.L83	;
 .L86:
-	mov	rdi, rsp	;,
+	lea	rdi, [rsp+16]	;,
 	call	_ZN7NaturalC1Ev	;
-	mov	rsi, QWORD PTR [rbx+8]	; tmp93, n_11(D)->end
-	sub	rsi, QWORD PTR [rbx]	; tmp93, n_11(D)->begin
-	mov	rdi, rsp	;,
-	sar	rsi, 3	; tmp93,
-	inc	rsi	; tmp94
+	mov	rsi, QWORD PTR [rbx+8]	; tmp94, n_11(D)->end
+	sub	rsi, QWORD PTR [rbx]	; tmp94, n_11(D)->begin
+	lea	rdi, [rsp+16]	;,
+	sar	rsi, 3	; tmp94,
+	inc	rsi	; tmp95
 	call	_ZN7Natural6resizeEm	;
 	mov	rsi, QWORD PTR [rbx]	; j, n_11(D)->begin
 	mov	rdi, QWORD PTR [rbx+8]	; D.4659, n_11(D)->end
-	mov	rcx, QWORD PTR [rsp]	; ivtmp.241, line.begin
+	mov	rcx, QWORD PTR [rsp+16]	; ivtmp.241, line.begin
 	jmp	.L84	;
 .L85:
 	mov	rax, QWORD PTR [rsi]	; D.4673, MEM[base: j_4, offset: 0B]
+	mov	r13, QWORD PTR [rcx]	; MEM[base: D.5243_68, offset: 0B], MEM[base: D.5243_68, offset: 0B]
+	xor	r14d, r14d	; MEM[base: D.5243_68, offset: 0B]
+	mul	QWORD PTR [rbp+0]	; MEM[base: i_2, offset: 0B]
+	add	rax, r13	; r, MEM[base: D.5243_68, offset: 0B]
+	adc	rdx, r14	; r, MEM[base: D.5243_68, offset: 0B]
+	mov	QWORD PTR [rcx], rax	; MEM[base: D.5243_68, offset: 0B], r
 	add	rsi, 8	; j,
-	mul	QWORD PTR [r14]	; MEM[base: i_2, offset: 0B]
-	add	QWORD PTR [rcx], rax	; MEM[base: D.5243_67, offset: 0B], r
-	mov	QWORD PTR [rcx+8], rdx	; MEM[base: D.5243_67, offset: 8B], tmp105
+	mov	QWORD PTR [rcx+8], rdx	; MEM[base: D.5243_68, offset: 8B], tmp107
 	add	rcx, 8	; ivtmp.241,
 .L84:
 	cmp	rsi, rdi	; j, D.4659
 	jb	.L85	;,
+	lea	rdi, [rsp+16]	;,
 	mov	rsi, r12	;, ivtmp.245
-	mov	rdi, rsp	;,
-	add	r14, 8	; i,
-	call	_ZN7Natural5shiftEm	;
-	mov	rsi, rsp	;,
-	mov	rdi, rbp	;, <retval>
+	add	rbp, 8	; i,
 	inc	r12	; ivtmp.245
+	call	_ZN7Natural5shiftEm	;
+	mov	rdi, QWORD PTR [rsp+8]	;, %sfp
+	lea	rsi, [rsp+16]	;,
 	call	_ZN7NaturalpLERKS_	;
-	mov	rdi, rsp	;,
+	lea	rdi, [rsp+16]	;,
 	call	_ZN7NaturalD1Ev	;
 .L83:
-	cmp	r14, QWORD PTR [r13+8]	; i, this_7(D)->end
+	cmp	rbp, QWORD PTR [r15+8]	; i, this_7(D)->end
 	jb	.L86	;,
-	add	rsp, 16	;,
-	mov	rax, rbp	;, <retval>
+	mov	rax, QWORD PTR [rsp+8]	;, %sfp
+	add	rsp, 40	;,
 	pop	rbx	;
 	pop	rbp	;
 	pop	r12	;
 	pop	r13	;
 	pop	r14	;
+	pop	r15	;
 	ret
 	.size	_ZNK7NaturalmlERKS_, .-_ZNK7NaturalmlERKS_
 	.align 2

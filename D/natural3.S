@@ -51,8 +51,8 @@ _ZL19parseBigendianQwordPKci:
 .L5:
 	mov	rcx, rdx	; tmp105, ivtmp.42
 	neg	rcx	; tmp105
-	movsx	r8d, BYTE PTR [rdi+15+rcx]	; D.4750, MEM[base: n_9(D), index: D.4941_34, offset: 15B]
-	cmp	r8b, 57	; D.4750,
+	movsx	r8d, BYTE PTR [rdi+15+rcx]	; D.4745, MEM[base: n_9(D), index: D.4936_34, offset: 15B]
+	cmp	r8b, 57	; D.4745,
 	jg	.L3	;,
 	sub	r8d, 48	; tmp107,
 	jmp	.L6	;
@@ -60,7 +60,7 @@ _ZL19parseBigendianQwordPKci:
 	sub	r8d, 87	; tmp109,
 .L6:
 	lea	ecx, [0+rdx*4]	; tmp110,
-	movsx	r8, r8d	; D.4922, tmp109
+	movsx	r8, r8d	; D.4917, tmp109
 	inc	rdx	; ivtmp.42
 	sal	r8, cl	; tmp111, tmp110
 	or	rax, r8	; result, tmp111
@@ -85,26 +85,26 @@ _ZN7Natural5shiftEm:
 	sub	rbx, r12	; tmp92, oldBegin
 	sar	rbx, 3	; tmp92,
 	lea	r13, [rbx+rsi]	; tmp93,
-	sal	r13, 3	; D.4776,
-	mov	rdi, r13	;, D.4776
+	sal	r13, 3	; D.4771,
+	mov	rdi, r13	;, D.4771
 	call	malloc	;
-	add	r13, rax	; tmp95, D.4777
-	mov	QWORD PTR [rbp+0], rax	; this_3(D)->begin, D.4777
+	add	r13, rax	; tmp95, D.4772
+	mov	QWORD PTR [rbp+0], rax	; this_3(D)->begin, D.4772
 	xor	edx, edx	; ii
 	mov	QWORD PTR [rbp+8], r13	; this_3(D)->end, tmp95
 	jmp	.L8	;
 .L9:
-	mov	QWORD PTR [rax+rdx*8], 0	; MEM[base: D.4777_16, index: ii_1, step: 8, offset: 0B],
+	mov	QWORD PTR [rax+rdx*8], 0	; MEM[base: D.4772_16, index: ii_1, step: 8, offset: 0B],
 	inc	rdx	; ii
 .L8:
 	cmp	rdx, r14	; ii, i
 	jne	.L9	;,
-	lea	rdx, [rax+rdx*8]	; D.4960,
+	lea	rdx, [rax+rdx*8]	; D.4955,
 	xor	eax, eax	; ii
 	jmp	.L10	;
 .L11:
-	mov	rcx, QWORD PTR [r12+rax*8]	; D.4798, MEM[base: oldBegin_4, index: ii_2, step: 8, offset: 0B]
-	mov	QWORD PTR [rdx+rax*8], rcx	; MEM[base: D.4960_48, index: ii_2, step: 8, offset: 0B], D.4798
+	mov	rcx, QWORD PTR [r12+rax*8]	; D.4793, MEM[base: oldBegin_4, index: ii_2, step: 8, offset: 0B]
+	mov	QWORD PTR [rdx+rax*8], rcx	; MEM[base: D.4955_48, index: ii_2, step: 8, offset: 0B], D.4793
 	inc	rax	; ii
 .L10:
 	cmp	rax, rbx	; ii, tmp92
@@ -128,7 +128,7 @@ _ZN7NaturalC2Ev:
 	lea	rdx, [rax+8]	; tmp63,
 	mov	QWORD PTR [rbx], rax	; this_2(D)->begin, tmp62
 	mov	QWORD PTR [rbx+8], rdx	; this_2(D)->end, tmp63
-	mov	QWORD PTR [rax], 0	; MEM[(long unsigned int *)D.4766_1],
+	mov	QWORD PTR [rax], 0	; MEM[(long unsigned int *)D.4761_1],
 	pop	rbx	;
 	ret
 	.size	_ZN7NaturalC2Ev, .-_ZN7NaturalC2Ev
@@ -148,7 +148,7 @@ _ZN7NaturalC2Em:
 	lea	rdx, [rax+8]	; tmp64,
 	mov	QWORD PTR [rbx], rax	; this_2(D)->begin, tmp63
 	mov	QWORD PTR [rbx+8], rdx	; this_2(D)->end, tmp64
-	mov	QWORD PTR [rax], rbp	; MEM[(long unsigned int *)D.4763_1], n
+	mov	QWORD PTR [rax], rbp	; MEM[(long unsigned int *)D.4758_1], n
 	pop	rdx	;
 	pop	rbx	;
 	pop	rbp	;
@@ -181,16 +181,16 @@ _ZN7NaturalC2EPKc:
 	setne	r13b	;, tmp174
 	shr	rax, 4	; tmp176,
 	add	r13, rax	; tmp177, tmp176
-	sal	r13, 3	; D.4712,
-	mov	rdi, r13	;, D.4712
+	sal	r13, 3	; D.4707,
+	mov	rdi, r13	;, D.4707
 	call	malloc	;
 	mov	rdx, rbx	;, l
-	mov	QWORD PTR [rbp+0], rax	; this_13(D)->begin, D.4713
-	add	r13, rax	; D.4721, D.4713
-	mov	r14, rax	; D.4713,
-	movsx	rax, ebx	; D.5015, l
-	mov	QWORD PTR [rbp+8], r13	; this_13(D)->end, D.4721
-	sub	rdx, rax	;, D.5015
+	mov	QWORD PTR [rbp+0], rax	; this_13(D)->begin, D.4708
+	add	r13, rax	; D.4716, D.4708
+	mov	r14, rax	; D.4708,
+	movsx	rax, ebx	; D.5010, l
+	mov	QWORD PTR [rbp+8], r13	; this_13(D)->end, D.4716
+	sub	rdx, rax	;, D.5010
 	lea	rax, [r12-16+rax]	;,
 	xor	ebp, ebp	; ivtmp.92
 	mov	QWORD PTR [rsp], rdx	; %sfp,
@@ -204,9 +204,9 @@ _ZN7NaturalC2EPKc:
 	sub	rdi, rbp	; tmp185, ivtmp.92
 	add	rbp, 16	; ivtmp.92,
 	shr	rax, 4	; tmp181,
-	lea	r15, [r14+rax*8]	; D.4731,
+	lea	r15, [r14+rax*8]	; D.4726,
 	call	_ZL19parseBigendianQwordPKci	;
-	mov	QWORD PTR [r15], rax	; *D.4731_29, D.4735
+	mov	QWORD PTR [r15], rax	; *D.4726_29, D.4730
 .L18:
 	mov	esi, ebx	; i,
 	sub	esi, ebp	; i, ivtmp.92
@@ -217,7 +217,7 @@ _ZN7NaturalC2EPKc:
 	movsx	rax, esi	; i, i
 	lea	rdi, [r12-16+rax]	; tmp188,
 	call	_ZL19parseBigendianQwordPKci	;
-	mov	QWORD PTR [r13-8], rax	; MEM[(long unsigned int *)D.4721_21 + -8B], D.4740
+	mov	QWORD PTR [r13-8], rax	; MEM[(long unsigned int *)D.4716_21 + -8B], D.4735
 .L17:
 	add	rsp, 24	;,
 	pop	rbx	;
@@ -239,16 +239,16 @@ _ZN7NaturalC2ERKS_:
 	push	rbp	;
 	mov	rbp, rsi	; n, n
 	push	rbx	;
-	mov	rbx, QWORD PTR [rsi+8]	; D.4701, n_1(D)->end
-	sub	rbx, QWORD PTR [rsi]	; D.4701, n_1(D)->begin
-	and	rbx, -8	; D.4701,
-	mov	rdi, rbx	;, D.4701
+	mov	rbx, QWORD PTR [rsi+8]	; D.4696, n_1(D)->end
+	sub	rbx, QWORD PTR [rsi]	; D.4696, n_1(D)->begin
+	and	rbx, -8	; D.4696,
+	mov	rdi, rbx	;, D.4696
 	call	malloc	;
 	lea	rdx, [rax+rbx]	; tmp78,
 	mov	QWORD PTR [r12], rax	; this_11(D)->begin, tmp77
-	mov	rcx, rbx	; D.4701, D.4701
+	mov	rcx, rbx	; D.4696, D.4696
 	mov	rsi, QWORD PTR [rbp+0]	; n_1(D)->begin, n_1(D)->begin
-	mov	rdi, rax	; D.4702, tmp77
+	mov	rdi, rax	; D.4697, tmp77
 	mov	QWORD PTR [r12+8], rdx	; this_11(D)->end, tmp78
 	rep movsb
 	pop	rbx	;
@@ -269,16 +269,16 @@ _ZN7NaturalaSERKS_:
 	push	rbx	;
 	mov	rdi, QWORD PTR [rdi]	;, this_1(D)->begin
 	call	free	;
-	mov	rbx, QWORD PTR [r12+8]	; D.4528, n_3(D)->end
-	sub	rbx, QWORD PTR [r12]	; D.4528, n_3(D)->begin
-	and	rbx, -8	; D.4528,
-	mov	rdi, rbx	;, D.4528
+	mov	rbx, QWORD PTR [r12+8]	; D.4523, n_3(D)->end
+	sub	rbx, QWORD PTR [r12]	; D.4523, n_3(D)->begin
+	and	rbx, -8	; D.4523,
+	mov	rdi, rbx	;, D.4523
 	call	malloc	;
 	lea	rdx, [rax+rbx]	; tmp80,
 	mov	QWORD PTR [rbp+0], rax	; this_1(D)->begin, tmp79
-	mov	rdi, rax	; D.4529, tmp79
+	mov	rdi, rax	; D.4524, tmp79
 	mov	rsi, QWORD PTR [r12]	; n_3(D)->begin, n_3(D)->begin
-	mov	rcx, rbx	; D.4528, D.4528
+	mov	rcx, rbx	; D.4523, D.4523
 	mov	rax, rbp	;, this
 	mov	QWORD PTR [rbp+8], rdx	; this_1(D)->end, tmp80
 	rep movsb
@@ -291,25 +291,25 @@ _ZN7NaturalaSERKS_:
 	.globl	_ZNK7NaturaleqERKS_
 	.type	_ZNK7NaturaleqERKS_, @function
 _ZNK7NaturaleqERKS_:
-	mov	r8, QWORD PTR [rdi]	; D.4504, this_2(D)->begin
+	mov	r8, QWORD PTR [rdi]	; D.4499, this_2(D)->begin
 	mov	rdx, QWORD PTR [rdi+8]	; tmp81, this_2(D)->end
-	xor	eax, eax	; D.4517
-	mov	rdi, QWORD PTR [rsi]	; D.4510, n_10(D)->begin
+	xor	eax, eax	; D.4512
+	mov	rdi, QWORD PTR [rsi]	; D.4505, n_10(D)->begin
 	mov	rcx, QWORD PTR [rsi+8]	; tmp85, n_10(D)->end
-	sub	rdx, r8	; tmp81, D.4504
-	sub	rcx, rdi	; tmp85, D.4510
+	sub	rdx, r8	; tmp81, D.4499
+	sub	rcx, rdi	; tmp85, D.4505
 	sar	rdx, 3	; tmp81,
 	sar	rcx, 3	; tmp85,
 	cmp	rdx, rcx	; tmp81, tmp85
 	jne	.L31	;,
 	push	rcx	;
-	mov	rsi, rdi	;, D.4510
+	mov	rsi, rdi	;, D.4505
 	sal	rdx, 3	; tmp86,
-	mov	rdi, r8	;, D.4504
+	mov	rdi, r8	;, D.4499
 	call	memcmp	;
 	pop	rsi	;
 	test	eax, eax	; tmp87
-	sete	al	;, D.4517
+	sete	al	;, D.4512
 .L31:
 	ret
 	.size	_ZNK7NaturaleqERKS_, .-_ZNK7NaturaleqERKS_
@@ -340,7 +340,7 @@ _ZNK7Natural5PrintEv:
 	push	r11	;
 	mov	rax, QWORD PTR [rdi+8]	; this_2(D)->end, this_2(D)->end
 	mov	edi, 1	;,
-	mov	rdx, QWORD PTR [rax-8]	; MEM[(long unsigned int *)D.4478_3 + -8B], MEM[(long unsigned int *)D.4478_3 + -8B]
+	mov	rdx, QWORD PTR [rax-8]	; MEM[(long unsigned int *)D.4473_3 + -8B], MEM[(long unsigned int *)D.4473_3 + -8B]
 	xor	eax, eax	;
 	call	__printf_chk	;
 	mov	rbx, QWORD PTR [rbp+8]	; i, this_2(D)->end
@@ -366,30 +366,30 @@ _ZNK7Natural5PrintEv:
 	.globl	_ZNK7Natural4SizeEv
 	.type	_ZNK7Natural4SizeEv, @function
 _ZNK7Natural4SizeEv:
-	mov	rcx, QWORD PTR [rdi]	; D.4450, this_2(D)->begin
+	mov	rcx, QWORD PTR [rdi]	; D.4445, this_2(D)->begin
 	mov	rax, QWORD PTR [rdi+8]	; tmp108, this_2(D)->end
-	sub	rax, rcx	; tmp108, D.4450
+	sub	rax, rcx	; tmp108, D.4445
 	sar	rax, 3	; tmp108,
-	dec	eax	; D.4455
-	movsx	rdx, eax	; D.4455, D.4455
-	lea	rdi, [rcx+rdx*8]	; D.5107,
+	dec	eax	; D.4450
+	movsx	rdx, eax	; D.4450, D.4450
+	lea	rdi, [rcx+rdx*8]	; D.5102,
 	xor	edx, edx	; ivtmp.138
 	jmp	.L39	;
 .L41:
 	inc	rdx	; ivtmp.138
 	imul	r8, rdx, -8	; tmp111, ivtmp.138,
-	cmp	QWORD PTR [rdi+8+r8], 0	; MEM[base: D.5107_61, index: D.5108_62, offset: 8B],
+	cmp	QWORD PTR [rdi+8+r8], 0	; MEM[base: D.5102_61, index: D.5103_62, offset: 8B],
 	je	.L39	;,
 .L42:
 	mov	edi, esi	; tmp112, selectedQword
 	movsx	rsi, esi	; selectedQword, selectedQword
 	xor	eax, eax	; result
 	sal	edi, 6	; tmp112,
-	mov	rdx, QWORD PTR [rcx+rsi*8]	; n, *D.4463_24
-	movsx	rdi, edi	; D.4469, tmp112
+	mov	rdx, QWORD PTR [rcx+rsi*8]	; n, *D.4458_24
+	movsx	rdi, edi	; D.4464, tmp112
 	jmp	.L40	;
 .L39:
-	mov	esi, eax	; selectedQword, D.4455
+	mov	esi, eax	; selectedQword, D.4450
 	sub	esi, edx	; selectedQword, ivtmp.138
 	test	esi, esi	; selectedQword
 	jg	.L41	;,
@@ -400,7 +400,7 @@ _ZNK7Natural4SizeEv:
 .L40:
 	test	rdx, rdx	; n
 	jne	.L43	;,
-	add	rax, rdi	; tmp114, D.4469
+	add	rax, rdi	; tmp114, D.4464
 	ret
 	.size	_ZNK7Natural4SizeEv, .-_ZNK7Natural4SizeEv
 	.align 2
@@ -408,7 +408,7 @@ _ZNK7Natural4SizeEv:
 	.type	_ZNK7NaturalcvbEv, @function
 _ZNK7NaturalcvbEv:
 	call	_ZNK7Natural4SizeEv	;
-	test	rax, rax	; D.4492
+	test	rax, rax	; D.4487
 	setne	al	;, tmp64
 	ret
 	.size	_ZNK7NaturalcvbEv, .-_ZNK7NaturalcvbEv
@@ -423,41 +423,41 @@ _ZNK7NaturalltERKS_:
 	mov	rbx, rdi	; this, this
 	call	_ZNK7Natural4SizeEv	;
 	mov	rdi, rbp	;, n
-	mov	r12, rax	; D.4549,
+	mov	r12, rax	; D.4544,
 	call	_ZNK7Natural4SizeEv	;
-	cmp	r12, rax	; D.4549, D.4550
-	mov	dl, 1	; D.5116,
+	cmp	r12, rax	; D.4544, D.4545
+	mov	dl, 1	; D.5111,
 	jb	.L47	;,
-	mov	dl, 0	; D.5116,
+	mov	dl, 0	; D.5111,
 	ja	.L47	;,
-	mov	rsi, QWORD PTR [rbx]	; D.5122, this_3(D)->begin
+	mov	rsi, QWORD PTR [rbx]	; D.5117, this_3(D)->begin
 	mov	rax, QWORD PTR [rbx+8]	; tmp91, this_3(D)->end
 	xor	ecx, ecx	; ivtmp.158
-	sub	rax, rsi	; tmp91, D.5122
+	sub	rax, rsi	; tmp91, D.5117
 	sar	rax, 3	; tmp91,
-	dec	eax	; D.5127
-	movsx	rdx, eax	; D.5127, D.5127
+	dec	eax	; D.5122
+	movsx	rdx, eax	; D.5122, D.5122
 	sal	rdx, 3	; ivtmp.172,
 	jmp	.L48	;
 .L50:
 	mov	rdi, QWORD PTR [rbp+0]	; n_5(D)->begin, n_5(D)->begin
-	mov	r8, QWORD PTR [rsi+rdx]	; D.5131, MEM[base: D.5122_39, index: ivtmp.172_60, offset: 0B]
+	mov	r8, QWORD PTR [rsi+rdx]	; D.5126, MEM[base: D.5117_39, index: ivtmp.172_60, offset: 0B]
 	inc	rcx	; ivtmp.158
-	mov	rdi, QWORD PTR [rdi+rdx]	; D.5134, *D.5133_52
+	mov	rdi, QWORD PTR [rdi+rdx]	; D.5129, *D.5128_52
 	sub	rdx, 8	; ivtmp.172,
-	cmp	r8, rdi	; D.5131, D.5134
+	cmp	r8, rdi	; D.5126, D.5129
 	jb	.L53	;,
 .L48:
-	cmp	eax, ecx	; D.5127, ivtmp.158
+	cmp	eax, ecx	; D.5122, ivtmp.158
 	jns	.L50	;,
-	xor	edx, edx	; D.5116
+	xor	edx, edx	; D.5111
 	jmp	.L47	;
 .L53:
-	mov	dl, 1	; D.5116,
+	mov	dl, 1	; D.5111,
 .L47:
 	pop	rbx	;
 	pop	rbp	;
-	mov	al, dl	;, D.5116
+	mov	al, dl	;, D.5111
 	pop	r12	;
 	ret
 	.size	_ZNK7NaturalltERKS_, .-_ZNK7NaturalltERKS_
@@ -479,7 +479,7 @@ _ZNK7NaturalleERKS_:
 	mov	rbx, rdi	; this, this
 	push	rax	;
 	call	_ZNK7NaturalltERKS_	;
-	test	al, al	; D.4543
+	test	al, al	; D.4538
 	jne	.L57	;,
 	mov	rsi, rbp	;, n
 	mov	rdi, rbx	;, this
@@ -509,15 +509,15 @@ _ZNK7NaturalgtERKS_:
 	.type	_ZN7Natural6resizeEm, @function
 _ZN7Natural6resizeEm:
 	push	rbp	;
-	lea	rbp, [0+rsi*8]	; D.4444,
+	lea	rbp, [0+rsi*8]	; D.4439,
 	push	rbx	;
 	mov	rbx, rdi	; this, this
-	mov	rsi, rbp	;, D.4444
+	mov	rsi, rbp	;, D.4439
 	push	rcx	;
 	mov	rdi, QWORD PTR [rdi]	;, this_3(D)->begin
 	call	realloc	;
-	add	rbp, rax	; tmp65, D.4446
-	mov	QWORD PTR [rbx], rax	; this_3(D)->begin, D.4446
+	add	rbp, rax	; tmp65, D.4441
+	mov	QWORD PTR [rbx], rax	; this_3(D)->begin, D.4441
 	mov	QWORD PTR [rbx+8], rbp	; this_3(D)->end, tmp65
 	pop	rsi	;
 	pop	rbx	;
@@ -528,13 +528,13 @@ _ZN7Natural6resizeEm:
 	.globl	_ZN7Natural6shrinkEv
 	.type	_ZN7Natural6shrinkEv, @function
 _ZN7Natural6shrinkEv:
-	mov	rdx, QWORD PTR [rdi]	; D.4438, this_2(D)->begin
-	add	rdx, 8	; D.4438,
+	mov	rdx, QWORD PTR [rdi]	; D.4433, this_2(D)->begin
+	add	rdx, 8	; D.4433,
 .L66:
-	mov	rax, QWORD PTR [rdi+8]	; D.4439, this_2(D)->end
-	cmp	rdx, rax	; D.4438, D.4439
+	mov	rax, QWORD PTR [rdi+8]	; D.4434, this_2(D)->end
+	cmp	rdx, rax	; D.4433, D.4434
 	jae	.L63	;,
-	cmp	QWORD PTR [rax-8], 0	; MEM[(long unsigned int *)D.4439_5 + -8B],
+	cmp	QWORD PTR [rax-8], 0	; MEM[(long unsigned int *)D.4434_5 + -8B],
 	jne	.L63	;,
 	sub	rax, 8	; tmp66,
 	mov	QWORD PTR [rdi+8], rax	; this_2(D)->end, tmp66
@@ -568,22 +568,22 @@ _ZNK7NaturalplERKS_:
 	cmp	rbp, r15	; tmp120, tmp116
 	mov	rax, r15	; tmp121, tmp116
 	cmovae	rax, rbp	; tmp120,, tmp121
-	lea	rdx, [8+rax*8]	; D.4612,
-	mov	rsi, rdx	;, D.4612
+	lea	rdx, [8+rax*8]	; D.4607,
+	mov	rsi, rdx	;, D.4607
 	mov	QWORD PTR [rsp+8], rdx	;,
 	call	realloc	;
 	mov	rdx, QWORD PTR [rsp+8]	;,
 	mov	QWORD PTR [rbx], rax	; <retval>_7(D)->begin, i
 	mov	rcx, rax	; i, i
 	mov	r8, QWORD PTR [rsp]	;,
-	add	rdx, rax	; D.4617, i
-	mov	QWORD PTR [rbx+8], rdx	; <retval>_7(D)->end, D.4617
+	add	rdx, rax	; D.4612, i
+	mov	QWORD PTR [rbx+8], rdx	; <retval>_7(D)->end, D.4612
 	jmp	.L68	;
 .L69:
 	mov	QWORD PTR [rcx], 0	; MEM[base: i_1, offset: 0B],
 	add	rcx, 8	; i,
 .L68:
-	cmp	rcx, rdx	; i, D.4617
+	cmp	rcx, rdx	; i, D.4612
 	jb	.L69	;,
 	mov	rdi, rax	; i, i
 	lea	rcx, [0+r15*8]	; tmp123,
@@ -599,11 +599,11 @@ _ZNK7NaturalplERKS_:
 	mov	QWORD PTR [rsp+40], 0	; %sfp,
 	mov	rdi, QWORD PTR [rsp+24]	; r, %sfp
 	mov	QWORD PTR [rsp+56], 0	; %sfp,
-	lea	rcx, [rcx+rax*8]	; D.4633,
-	mov	rsi, QWORD PTR [rcx]	;, *D.4633_49
+	lea	rcx, [rcx+rax*8]	; D.4628,
+	mov	rsi, QWORD PTR [rcx]	;, *D.4628_49
 	mov	QWORD PTR [rsp+16], rsi	; %sfp,
 	mov	rsi, QWORD PTR [r12]	; n_16(D)->begin, n_16(D)->begin
-	mov	rsi, QWORD PTR [rsi+rax*8]	;, *D.4635_55
+	mov	rsi, QWORD PTR [rsi+rax*8]	;, *D.4630_55
 	mov	QWORD PTR [rsp+32], rsi	; %sfp,
 	mov	rsi, QWORD PTR [rsp+16]	; r, %sfp
 	add	rsi, QWORD PTR [rsp+32]	; r, %sfp
@@ -611,25 +611,25 @@ _ZNK7NaturalplERKS_:
 	add	rsi, QWORD PTR [rsp+48]	; r, %sfp
 	adc	rdi, QWORD PTR [rsp+56]	; r, %sfp
 	inc	rax	; ivtmp.203
-	mov	QWORD PTR [rcx], rsi	; *D.4633_49, r
+	mov	QWORD PTR [rcx], rsi	; *D.4628_49, r
 	mov	rdx, rdi	; carry, r
 .L70:
 	cmp	rax, rbp	; ivtmp.203, tmp120
 	jne	.L71	;,
 	cdqe
 	xor	ecx, ecx	; ivtmp.199
-	sal	rax, 3	; D.5192,
+	sal	rax, 3	; D.5187,
 	jmp	.L72	;
 .L73:
-	lea	rdx, [rcx+rax]	; D.4633,
-	add	rdx, QWORD PTR [rbx]	; D.4633, <retval>_7(D)->begin
+	lea	rdx, [rcx+rax]	; D.4628,
+	add	rdx, QWORD PTR [rbx]	; D.4628, <retval>_7(D)->begin
 	xor	r14d, r14d	; r
 	mov	rdi, r14	; r, r
-	mov	r13, QWORD PTR [rdx]	; r, *D.4633_73
+	mov	r13, QWORD PTR [rdx]	; r, *D.4628_73
 	mov	rsi, r13	; r, r
 	add	rsi, 1	; r,
 	adc	rdi, 0	; r,
-	mov	QWORD PTR [rdx], rsi	; *D.4633_73, r
+	mov	QWORD PTR [rdx], rsi	; *D.4628_73, r
 	add	rcx, 8	; ivtmp.199,
 	mov	rdx, rdi	; carry, r
 .L72:
@@ -751,22 +751,22 @@ _ZNK7NaturalmlERKS_:
 	inc	rsi	; tmp95
 	call	_ZN7Natural6resizeEm	;
 	mov	rsi, QWORD PTR [rbx]	; j, n_11(D)->begin
-	mov	rdi, QWORD PTR [rbx+8]	; D.4659, n_11(D)->end
+	mov	rdi, QWORD PTR [rbx+8]	; D.4654, n_11(D)->end
 	mov	rcx, QWORD PTR [rsp+16]	; ivtmp.241, line.begin
 	jmp	.L84	;
 .L85:
-	mov	rax, QWORD PTR [rsi]	; D.4673, MEM[base: j_4, offset: 0B]
-	mov	r13, QWORD PTR [rcx]	; MEM[base: D.5243_68, offset: 0B], MEM[base: D.5243_68, offset: 0B]
-	xor	r14d, r14d	; MEM[base: D.5243_68, offset: 0B]
+	mov	rax, QWORD PTR [rsi]	; D.4668, MEM[base: j_4, offset: 0B]
+	mov	r13, QWORD PTR [rcx]	; MEM[base: D.5238_68, offset: 0B], MEM[base: D.5238_68, offset: 0B]
+	xor	r14d, r14d	; MEM[base: D.5238_68, offset: 0B]
 	mul	QWORD PTR [rbp+0]	; MEM[base: i_2, offset: 0B]
-	add	rax, r13	; r, MEM[base: D.5243_68, offset: 0B]
-	adc	rdx, r14	; r, MEM[base: D.5243_68, offset: 0B]
-	mov	QWORD PTR [rcx], rax	; MEM[base: D.5243_68, offset: 0B], r
+	add	rax, r13	; r, MEM[base: D.5238_68, offset: 0B]
+	adc	rdx, r14	; r, MEM[base: D.5238_68, offset: 0B]
+	mov	QWORD PTR [rcx], rax	; MEM[base: D.5238_68, offset: 0B], r
 	add	rsi, 8	; j,
-	mov	QWORD PTR [rcx+8], rdx	; MEM[base: D.5243_68, offset: 8B], tmp107
+	mov	QWORD PTR [rcx+8], rdx	; MEM[base: D.5238_68, offset: 8B], tmp107
 	add	rcx, 8	; ivtmp.241,
 .L84:
-	cmp	rsi, rdi	; j, D.4659
+	cmp	rsi, rdi	; j, D.4654
 	jb	.L85	;,
 	lea	rdi, [rsp+16]	;,
 	mov	rsi, r12	;, ivtmp.245
