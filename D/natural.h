@@ -50,6 +50,8 @@ public:
 
     // wypisanie na stdout w postaci szesnastkowej bez zer wiodących
     void Print() const; // hex to stdout
+
+    void swap(Natural &n);
     
 private:
     /**

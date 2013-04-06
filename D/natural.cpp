@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
  static void printULong(unsigned long n)
 {
@@ -81,6 +82,7 @@ Natural::Natural(const char* n)
     }
     if(i>0)
         end[-1]=parseBigendianQword(&n[i-16],i);
+    shrink();
 }
 
 Natural::Natural(const Natural& n)
@@ -99,23 +101,27 @@ bool Natural::operator!=(const Natural& n) const
 Natural Natural::operator*(const Natural& n) const
 {
     Natural result;
-    int s=0;
-    for(unsigned long *i=begin;i<end;++i,++s)
+    std::size_t k=end-begin;
+    std::size_t l=n.end-n.begin;
+    result.resize(k+l);
+    for(unsigned long *i=result.begin;i<result.end;++i)
+        *i=0UL;
+    for(std::size_t i=0;i<k;++i)
     {
-        Natural line;
-        line.resize(n.end-n.begin+1);
-        int ii=0;
-        for(unsigned long *j=n.begin;j<n.end;++j,++ii)
+        unsigned long carry=0UL;
+        for(std::size_t j=0;j<l;++j)
         {
-            unsigned __int128 r=*i;
-            r*=*j;
-            r+=line.begin[ii];
-            line.begin[ii]=r&(~0UL);
-            line.begin[ii+1]=r>>64;
+            unsigned __int128 tmp;
+            tmp=begin[i];
+            tmp*=n.begin[j];
+            tmp+=result.begin[i+j];
+            tmp+=carry;
+            carry=tmp>>64;
+            result.begin[i+j]=tmp&(~0UL);
         }
-        line.shift(s);
-        result+=line;
+        result.begin[i+l]=carry;
     }
+    result.shrink();
     return result;
 }
 
@@ -195,12 +201,16 @@ bool Natural::operator<=(const Natural& n) const
 
 Natural& Natural::operator=(const Natural& n)
 {
-    free(begin);
-    const size_t size=n.end-n.begin;
-    begin=static_cast<unsigned long *>(malloc(size*sizeof(unsigned long)));
-    end=begin+size;
-    memcpy(begin,n.begin,size*sizeof(unsigned long));
+    Natural newNatural=n;
+    swap(newNatural);
     return *this;
+}
+
+void Natural::swap(Natural& n)
+{
+    using std::swap;
+    swap(begin,n.begin);
+    swap(end,n.end);
 }
 
 bool Natural::operator==(const Natural& n) const
@@ -231,7 +241,6 @@ void Natural::Print() const
     printULong(*(end-1));
     for(unsigned long *i=end-2;i>=begin;--i)
         printULongWithPad(*i);
-    printf("\n");
 }
 
 long unsigned int Natural::Size() const

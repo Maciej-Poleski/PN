@@ -144,7 +144,7 @@ _ZN7NaturalC2EPKc:
     mov     rbp, rdi        ; rbp=this
     mov     rdi, rsi        ; rdi=n
 
-    sub     rsp, 24
+    sub     rsp, 40
     repnz scasb
 
     not     rcx
@@ -158,31 +158,33 @@ _ZN7NaturalC2EPKc:
     mov     rdi, r13        ; rdi=size_for_malloc
     call    malloc
     mov     rdx, rbx        ; rdx=l
-    mov     QWORD [rbp], rax  ; this->begin = begin
     add     r13, rax        ; r13=end
-    mov     r14, rax        ; r14=begin
+    mov     r15, rax        ; r15=begin
+    mov     QWORD [rbp], rax  ; this->begin = begin
     movsx   rax, ebx        ; rax = l
     mov     QWORD [rbp+8], r13  ; this->end = end
     sub     rdx, rax
     lea     rax, [r12-16+rax]
-    xor     rbp, rbp        ; aux (0)
-    mov     QWORD [rsp], rdx
-    mov     QWORD [rsp+8], rax
+    xor     r14, r14        ; aux (0)
+    mov     QWORD [rsp+16], rdx
+    mov     QWORD [rsp+24], rax
     jmp     .for_check
 .for:
-    mov     rax, QWORD [rsp]
-    mov     rdi, QWORD [rsp+8]
+    mov     rax, QWORD [rsp+16]
+    mov     rdi, QWORD [rsp+24]
     mov     rsi, 16
-    add     rax, rbp
-    sub     rdi, rbp
-    add     rbp, 16
+    add     rax, r14
+    sub     rdi, r14
+    add     r14, 16
     shr     rax, 4
-    lea     r15, [r14+rax*8]
+    lea     r8, [r15+rax*8]
+    mov     QWORD [rsp+8], r8
     call    _ZL19parseBigendianQwordPKci    ; begin[(l-i)/16]=parseBigendianQword(&n[i-16]);
-    mov     QWORD [r15], rax
+    mov     r8, QWORD [rsp+8]
+    mov     QWORD [r8], rax
 .for_check:
     mov     esi, ebx
-    sub     esi, ebp
+    sub     esi, r14d
     cmp     esi, 15
     jg      .for
     test    esi, esi
@@ -192,13 +194,28 @@ _ZN7NaturalC2EPKc:
     call    _ZL19parseBigendianQwordPKci
     mov     QWORD [r13-8], rax  ; end[-1]=parseBigendianQword(&n[i-16],i);
 .end_for:
-    add     rsp, 24
+    add     rsp, 40
+    mov     rdi, rbp
     pop     rbx
     pop     rbp
     pop     r12
     pop     r13
     pop     r14
     pop     r15
+    jmp     _ZN7Natural6shrinkEv    ; shrink();
+
+
+global _ZN7Natural4swapERS_
+
+_ZN7Natural4swapERS_:
+    mov     rax, QWORD [rdi]
+    mov     rdx, QWORD [rsi]
+    mov     QWORD [rdi], rdx
+    mov     QWORD [rsi], rax    ; swap(begin,n.begin);
+    mov     rdx, QWORD [rsi+8]
+    mov     rax, QWORD [rdi+8]
+    mov     QWORD [rdi+8], rdx
+    mov     QWORD [rsi+8], rax  ; swap(end,n.end);
     ret
 
 global	_ZN7NaturalC1EPKc
@@ -235,30 +252,20 @@ _ZN7NaturalC1ERKS_	equ	_ZN7NaturalC2ERKS_
 global	_ZN7NaturalaSERKS_
 
 _ZN7NaturalaSERKS_:
-    push    r12
-    push    rbp
     push    rbx
-    mov     r12, rsi        ; r12=n n
-    mov     rbp, rdi        ; rbp=this
-    mov     rdi, QWORD [rdi]    ; rdi = this->begin
-    call    free
-    mov     rbx, QWORD [r12+8]  ; size= n->end
-    sub     rbx, QWORD [r12]    ; size-= n->begin
-    and     rbx, -8
-    mov     rdi, rbx
-    call    malloc
-    lea     rdx, [rax+rbx]  ; rdx=end
-    mov     QWORD [rbp+0], rax  ; this->begin = begin
-    mov     rdi, rax        ; rdi = begin
-    mov     rsi, QWORD [r12]    ; rsi =n->begin
-    mov     rcx, rbx        ; rcx = size
-    mov     rax, rbp        ; rax = this (result)
-    mov     QWORD [rbp+8], rdx  ; this->end = end
-    rep movsb               ; memcpy(...)
+    mov     rbx, rdi        ; rbx = this
+    sub     rsp, 16         ; temporary
+    mov     rdi, rsp
+    call    _ZN7NaturalC1ERKS_ ;  Natural newNatural=n;
+    mov     rsi, rsp
+    mov     rdi, rbx        ; rdi = this
+    call    _ZN7Natural4swapERS_    ; swap(newNatural);
+    mov     rdi, rsp
+    call    _ZN7NaturalD1Ev ; destroy temporary
+    add     rsp, 16
+    mov     rax, rbx        ; rax = this (result)
     pop     rbx
-    pop     rbp
-    pop     r12
-    ret
+    ret                     ; return *this;
 
 
 global	_ZNK7NaturaleqERKS_
@@ -331,8 +338,9 @@ _ZNK7Natural5PrintEv:
     pop     r10
     pop     rbx
     pop     rbp
-    mov     rdi, 10 ; '\n'
-    jmp     putchar
+;     mov     rdi, 10 ; '\n'
+;     jmp     putchar
+    ret
 
 
 global	_ZNK7Natural4SizeEv
@@ -711,58 +719,80 @@ _ZNK7NaturalmlERKS_:
     push    r12
     push    rbp
     push    rbx
-    mov     r15, rsi        ; r15 = this
-    xor     r12, r12        ; r12 = s = 0 (for shift)
-    mov     rbx, rdx        ; rbx = n
-    sub     rsp, 40
-    mov     QWORD [rsp+8], rdi  ; result
-    call    _ZN7NaturalC1Ev
-    mov     rbp, QWORD [r15]    ; i, this->begin
-    jmp     .for_external_check
-.for_external:
-    lea     rdi, [rsp+16]   ; temporary object starts here !!!!!!!!!
-    call    _ZN7NaturalC1Ev
-    mov     rsi, QWORD [rbx+8]  ; rsi = n->end
-    sub     rsi, QWORD [rbx]    ; rsi-= n->begin (rsi = size) (still in bytes)
-    lea     rdi, [rsp+16]   ; temporary
-    sar     rsi, 3  ; size/=8
-    inc     rsi     ; ++size
-    call    _ZN7Natural6resizeEm    ; line.resize(n.end-n.begin+1);
-    mov     rsi, QWORD [rbx]    ; rsi = j = n->begin
-    mov     rdi, QWORD [rbx+8]  ; rdi = n->end
-    mov     rcx, QWORD [rsp+16] ; rcx = ii = line.begin (including base)
-    jmp     .for_internal_check
-.for_internal:
-    mov     rax, QWORD [rsi]
-    mov     r13, QWORD [rcx]
-    xor     r14, r14
-    mul     QWORD [rbp]         ; *i * *j
-    add     rax, r13        ; r+=line.begin[ii];
-    adc     rdx, r14        ; r+= carry (upper 64)
-    mov     QWORD [rcx], rax    ; line.begin[ii]=r&(~0UL);
-    add     rsi, 8  ; ++j
-    mov     QWORD [rcx+8], rdx  ; line.begin[ii+1]=r>>64;
-    add     rcx, 8  ; ++ii
-.for_internal_check:
-    cmp     rsi, rdi        ; j, n->end
-    jb      .for_internal
 
-    lea     rdi, [rsp+16]
-    mov     rsi, r12        ; s (for shift)
-    add     rbp, 8  ; ++i
-    inc     r12     ; s (for shift)
-    call    _ZN7Natural5shiftEm     ; line.shift(s);
-    mov     rdi, QWORD [rsp+8]
-    lea     rsi, [rsp+16]
-    call    _ZN7NaturalpLERKS_      ; result+=line;
-    lea     rdi, [rsp+16]
-    call    _ZN7NaturalD1Ev
-.for_external_check:
-    cmp     rbp, QWORD [r15+8]  ; i, this->end
-    jb      .for_external
+    mov     r15, rdx        ; r15 = n
+    mov     r14, rsi        ; r14 = this
+    mov     rbp, rdi        ; rbp = result
+    sub     rsp, 56
 
-    mov     rax, QWORD [rsp+8]
-    add     rsp, 40
+    call    _ZN7NaturalC1Ev ; result
+
+    mov     r13, QWORD [r14+8]  ; r13 = k = this->end
+    mov     rbx, QWORD [r15+8]  ; rbx = l = n->end
+    mov     rdi, rbp        ; rdi = result
+    sub     r13, QWORD [r14]    ; k-= this->begin
+    sub     rbx, QWORD [r15]    ; l-= n->begin
+    shr     r13, 3  ; k/=8
+    shr     rbx, 3  ; l/=8
+    lea     rsi, [rbx+r13]  ; rsi = k+l
+    call    _ZN7Natural6resizeEm    ; result.resize(k+l);
+
+    mov     rsi, QWORD [rbp+0]  ; rsi = i = result->begin
+    mov     rdx, QWORD [rbp+8]  ; rdx = result->end
+    mov     rax, rsi        ; rax = i
+    jmp     .check_initialization_for
+.initialization_for:
+    mov     QWORD [rax], 0      ; *i=0UL;
+    add     rax, 8  ; ++i
+.check_initialization_for:
+    cmp     rax, rdx        ; for(unsigned long *i=result.begin;i<result.end;++i)
+    jb      .initialization_for
+
+    mov     rdi, rsi        ; result->begin = i
+    xor     r8, r8          ; i = 0
+    jmp     .check_first_for
+.second_for:
+    mov     rdx, QWORD [r15]    ; rdx = n->begin
+    mov     r12, QWORD [r14]    ; r12 = this->begin
+    mov     r9, QWORD [rsp+40]
+    mov     QWORD [rsp+16], r10 ; store carry
+    mov     r11, QWORD [rdx+rcx*8]      ; r11 = n.begin[j]
+    mov     r10, 0
+    mov     rax, r11        ; rax=n.begin[j]
+    mul     QWORD [r12+r9]      ; rax*=begin[i]
+    mov     r11, rax        ; r11 = tmp (lower 64)
+    mov     rax, QWORD [rdi+rcx*8]      ; rax = result.begin[i+j] (rdi jest przesuwane)
+    mov     QWORD [rsp], rax
+    mov     r9, QWORD [rsp]
+    add     r9, QWORD [rsp+16]      ; r9 = carry
+    adc     r10, 0
+    add     r9, r11         ; r9 = tmp = tmp + carry (lower 64!!!!!!)
+    adc     r10, rdx        ; r10 = tmp (upper 64) (new carry)
+    mov     QWORD [rdi+rcx*8], r9       ; result.begin[i+j]=tmp&(~0UL);
+    inc     rcx     ; ++j
+.check_second_for:
+    cmp     rcx, rbx        ; for(std::size_t j=0;j<l;++j)
+    jne     .second_for
+    mov     QWORD [rdi+rbx*8], r10      ; result.begin[i+l]=carry;
+    inc     r8      ; ++i
+    add     rdi, 8
+    ; fall
+.check_first_for:
+    cmp     r8, r13 ; for(std::size_t i=0;i<k;++i)
+    je      .done
+    mov     r9, rdi ; r9 = result->begin
+    xor     rcx, rcx        ; j = 0
+    xor     r10, r10        ; r10 = carry = 0
+    sub     r9, rsi
+    mov     QWORD [rsp+40], r9 ; store begin
+    jmp     .check_second_for
+
+.done:
+    mov     rdi, rbp        ; rdi = result
+    call    _ZN7Natural6shrinkEv    ; result.shrink();
+
+    add     rsp, 56
+    mov     rax, rbp        ; rax = result
     pop     rbx
     pop     rbp
     pop     r12
@@ -770,7 +800,6 @@ _ZNK7NaturalmlERKS_:
     pop     r14
     pop     r15
     ret
-
 
 global	_ZN7NaturalmLERKS_
 
