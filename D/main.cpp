@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 
 #include "natural.h"
 
@@ -9,6 +10,7 @@ int main(int argc, char **argv) {
     for(int i=0;i<1000;++i)
     {
         a.Print();
+        printf("\n");
         a*=b;
     }
     return 0;

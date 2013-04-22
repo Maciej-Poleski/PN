@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <algorithm>
 
  static void printULong(unsigned long n)
 {
@@ -187,12 +188,21 @@ bool Natural::operator<=(const Natural& n) const
 
 Natural& Natural::operator=(const Natural& n)
 {
-    free(begin);
-    const size_t size=n.end-n.begin;
-    begin=static_cast<unsigned long *>(malloc(size*sizeof(unsigned long)));
-    end=begin+size;
-    memcpy(begin,n.begin,size*sizeof(unsigned long));
+//     free(begin);
+//     const size_t size=n.end-n.begin;
+//     begin=static_cast<unsigned long *>(malloc(size*sizeof(unsigned long)));
+//     end=begin+size;
+//     memcpy(begin,n.begin,size*sizeof(unsigned long));
+    Natural newNatural=n;
+    swap(newNatural);
     return *this;
+}
+
+void Natural::swap(Natural& n)
+{
+    using std::swap;
+    swap(begin,n.begin);
+    swap(end,n.end);
 }
 
 bool Natural::operator==(const Natural& n) const
@@ -223,7 +233,7 @@ void Natural::Print() const
     printULong(*(end-1));
     for(unsigned long *i=end-2;i>=begin;--i)
         printULongWithPad(*i);
-    printf("\n");
+    //printf("\n");
 }
 
 long unsigned int Natural::Size() const
