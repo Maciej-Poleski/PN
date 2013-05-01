@@ -4,7 +4,7 @@
 ;	compiled by GNU C version 4.7.2, GMP version 5.1.1, MPFR version 3.1.2, MPC version 1.0.1
 ; GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
 ; options passed:  -D_GNU_SOURCE natural.cpp -masm=intel -mtune=generic
-; -march=x86-64 -auxbase-strip natural2.S -O3 -Os -fverbose-asm
+; -march=x86-64 -auxbase-strip natural2.S -Os -fverbose-asm
 ; options enabled:  -fasynchronous-unwind-tables -fauto-inc-dec
 ; -fbranch-count-reg -fcaller-saves -fcombine-stack-adjustments -fcommon
 ; -fcompare-elim -fcprop-registers -fcrossjumping -fcse-follow-jumps
@@ -572,14 +572,15 @@ _ZNK7NaturalmlERKS_:
 	push	rbx	;
 	sub	rsp, 56	;,
 	call	_ZN7NaturalC1Ev	;
-	mov	r13, QWORD PTR [r14+8]	; tmp108, this_6(D)->end
 	mov	rbx, QWORD PTR [r15+8]	; tmp112, n_14(D)->end
-	mov	rdi, rbp	;, <retval>
-	sub	r13, QWORD PTR [r14]	; tmp108, this_6(D)->begin
 	sub	rbx, QWORD PTR [r15]	; tmp112, n_14(D)->begin
-	sar	r13, 3	; tmp108,
+	mov	rdi, rbp	;, <retval>
+	mov	r13, QWORD PTR [r14+8]	; tmp108, this_6(D)->end
+	sub	r13, QWORD PTR [r14]	; tmp108, this_6(D)->begin
 	sar	rbx, 3	; tmp112,
-	lea	rsi, [rbx+r13]	; tmp113,
+	sar	r13, 3	; tmp108,
+	mov	rsi, rbx	; tmp113, tmp112
+	imul	rsi, r13	; tmp113, tmp108
 	call	_ZN7Natural6resizeEm	;
 	mov	rsi, QWORD PTR [rbp+0]	; i, <retval>_5(D)->begin
 	mov	rdx, QWORD PTR [rbp+8]	; D.10788, <retval>_5(D)->end

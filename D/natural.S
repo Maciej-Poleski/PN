@@ -2,7 +2,7 @@
 	.text
 	.type	_ZL19parseBigendianQwordPKci, @function
 _ZL19parseBigendianQwordPKci:
-.LFB419:
+.LFB59:
 	.cfi_startproc
 	xorl	%edx, %edx
 	xorl	%eax, %eax
@@ -28,13 +28,13 @@ _ZL19parseBigendianQwordPKci:
 	jg	.L5
 	ret
 	.cfi_endproc
-.LFE419:
+.LFE59:
 	.size	_ZL19parseBigendianQwordPKci, .-_ZL19parseBigendianQwordPKci
 	.align 2
 	.globl	_ZN7Natural5shiftEm
 	.type	_ZN7Natural5shiftEm, @function
 _ZN7Natural5shiftEm:
-.LFB421:
+.LFB61:
 	.cfi_startproc
 	pushq	%r14
 	.cfi_def_cfa_offset 16
@@ -95,13 +95,13 @@ _ZN7Natural5shiftEm:
 	.cfi_def_cfa_offset 8
 	jmp	free
 	.cfi_endproc
-.LFE421:
+.LFE61:
 	.size	_ZN7Natural5shiftEm, .-_ZN7Natural5shiftEm
 	.align 2
 	.globl	_ZN7NaturalC2Ev
 	.type	_ZN7NaturalC2Ev, @function
 _ZN7NaturalC2Ev:
-.LFB423:
+.LFB63:
 	.cfi_startproc
 	pushq	%rbx
 	.cfi_def_cfa_offset 16
@@ -117,7 +117,7 @@ _ZN7NaturalC2Ev:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE423:
+.LFE63:
 	.size	_ZN7NaturalC2Ev, .-_ZN7NaturalC2Ev
 	.globl	_ZN7NaturalC1Ev
 	.set	_ZN7NaturalC1Ev,_ZN7NaturalC2Ev
@@ -125,7 +125,7 @@ _ZN7NaturalC2Ev:
 	.globl	_ZN7NaturalC2Em
 	.type	_ZN7NaturalC2Em, @function
 _ZN7NaturalC2Em:
-.LFB426:
+.LFB66:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -151,7 +151,7 @@ _ZN7NaturalC2Em:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE426:
+.LFE66:
 	.size	_ZN7NaturalC2Em, .-_ZN7NaturalC2Em
 	.globl	_ZN7NaturalC1Em
 	.set	_ZN7NaturalC1Em,_ZN7NaturalC2Em
@@ -159,7 +159,7 @@ _ZN7NaturalC2Em:
 	.globl	_ZN7NaturalC2EPKc
 	.type	_ZN7NaturalC2EPKc, @function
 _ZN7NaturalC2EPKc:
-.LFB429:
+.LFB69:
 	.cfi_startproc
 	pushq	%r15
 	.cfi_def_cfa_offset 16
@@ -249,7 +249,7 @@ _ZN7NaturalC2EPKc:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE429:
+.LFE69:
 	.size	_ZN7NaturalC2EPKc, .-_ZN7NaturalC2EPKc
 	.globl	_ZN7NaturalC1EPKc
 	.set	_ZN7NaturalC1EPKc,_ZN7NaturalC2EPKc
@@ -257,7 +257,7 @@ _ZN7NaturalC2EPKc:
 	.globl	_ZN7NaturalC2ERKS_
 	.type	_ZN7NaturalC2ERKS_, @function
 _ZN7NaturalC2ERKS_:
-.LFB432:
+.LFB72:
 	.cfi_startproc
 	pushq	%r12
 	.cfi_def_cfa_offset 16
@@ -290,33 +290,57 @@ _ZN7NaturalC2ERKS_:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE432:
+.LFE72:
 	.size	_ZN7NaturalC2ERKS_, .-_ZN7NaturalC2ERKS_
 	.globl	_ZN7NaturalC1ERKS_
 	.set	_ZN7NaturalC1ERKS_,_ZN7NaturalC2ERKS_
 	.align 2
-	.globl	_ZN7Natural4swapERS_
-	.type	_ZN7Natural4swapERS_, @function
-_ZN7Natural4swapERS_:
-.LFB444:
+	.globl	_ZN7NaturalaSERKS_
+	.type	_ZN7NaturalaSERKS_, @function
+_ZN7NaturalaSERKS_:
+.LFB83:
 	.cfi_startproc
-	movq	(%rdi), %rax
-	movq	(%rsi), %rdx
-	movq	%rdx, (%rdi)
-	movq	%rax, (%rsi)
-	movq	8(%rsi), %rdx
-	movq	8(%rdi), %rax
-	movq	%rdx, 8(%rdi)
-	movq	%rax, 8(%rsi)
+	pushq	%r12
+	.cfi_def_cfa_offset 16
+	.cfi_offset 12, -16
+	movq	%rsi, %r12
+	pushq	%rbp
+	.cfi_def_cfa_offset 24
+	.cfi_offset 6, -24
+	movq	%rdi, %rbp
+	pushq	%rbx
+	.cfi_def_cfa_offset 32
+	.cfi_offset 3, -32
+	movq	(%rdi), %rdi
+	call	free
+	movq	8(%r12), %rbx
+	subq	(%r12), %rbx
+	andq	$-8, %rbx
+	movq	%rbx, %rdi
+	call	malloc
+	leaq	(%rax,%rbx), %rdx
+	movq	%rax, 0(%rbp)
+	movq	%rax, %rdi
+	movq	(%r12), %rsi
+	movq	%rbx, %rcx
+	movq	%rbp, %rax
+	movq	%rdx, 8(%rbp)
+	rep movsb
+	popq	%rbx
+	.cfi_def_cfa_offset 24
+	popq	%rbp
+	.cfi_def_cfa_offset 16
+	popq	%r12
+	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE444:
-	.size	_ZN7Natural4swapERS_, .-_ZN7Natural4swapERS_
+.LFE83:
+	.size	_ZN7NaturalaSERKS_, .-_ZN7NaturalaSERKS_
 	.align 2
 	.globl	_ZNK7NaturaleqERKS_
 	.type	_ZNK7NaturaleqERKS_, @function
 _ZNK7NaturaleqERKS_:
-.LFB445:
+.LFB84:
 	.cfi_startproc
 	movq	(%rdi), %r8
 	movq	8(%rdi), %rdx
@@ -328,7 +352,7 @@ _ZNK7NaturaleqERKS_:
 	sarq	$3, %rdx
 	sarq	$3, %rcx
 	cmpq	%rcx, %rdx
-	jne	.L30
+	jne	.L31
 	pushq	%rcx
 	.cfi_def_cfa_offset 16
 	movq	%rdi, %rsi
@@ -339,16 +363,16 @@ _ZNK7NaturaleqERKS_:
 	.cfi_def_cfa_offset 8
 	testl	%eax, %eax
 	sete	%al
-.L30:
+.L31:
 	ret
 	.cfi_endproc
-.LFE445:
+.LFE84:
 	.size	_ZNK7NaturaleqERKS_, .-_ZNK7NaturaleqERKS_
 	.align 2
 	.globl	_ZNK7NaturalneERKS_
 	.type	_ZNK7NaturalneERKS_, @function
 _ZNK7NaturalneERKS_:
-.LFB434:
+.LFB74:
 	.cfi_startproc
 	pushq	%r8
 	.cfi_def_cfa_offset 16
@@ -358,7 +382,7 @@ _ZNK7NaturalneERKS_:
 	xorl	$1, %eax
 	ret
 	.cfi_endproc
-.LFE434:
+.LFE74:
 	.size	_ZNK7NaturalneERKS_, .-_ZNK7NaturalneERKS_
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .LC0:
@@ -370,49 +394,52 @@ _ZNK7NaturalneERKS_:
 	.globl	_ZNK7Natural5PrintEv
 	.type	_ZNK7Natural5PrintEv, @function
 _ZNK7Natural5PrintEv:
-.LFB449:
+.LFB88:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
 	.cfi_offset 6, -16
 	movq	%rdi, %rbp
+	movl	$.LC0, %esi
 	pushq	%rbx
 	.cfi_def_cfa_offset 24
 	.cfi_offset 3, -24
 	pushq	%r11
 	.cfi_def_cfa_offset 32
 	movq	8(%rdi), %rax
-	movl	$.LC0, %edi
-	movq	-8(%rax), %rsi
+	movl	$1, %edi
+	movq	-8(%rax), %rdx
 	xorl	%eax, %eax
-	call	printf
+	call	__printf_chk
 	movq	8(%rbp), %rbx
 	subq	$16, %rbx
-	jmp	.L34
-.L35:
-	movq	(%rbx), %rsi
-	movl	$.LC1, %edi
+	jmp	.L35
+.L36:
+	movq	(%rbx), %rdx
+	movl	$.LC1, %esi
+	movl	$1, %edi
 	xorl	%eax, %eax
 	subq	$8, %rbx
-	call	printf
-.L34:
+	call	__printf_chk
+.L35:
 	cmpq	0(%rbp), %rbx
-	jae	.L35
+	jae	.L36
 	popq	%r10
 	.cfi_def_cfa_offset 24
 	popq	%rbx
 	.cfi_def_cfa_offset 16
 	popq	%rbp
 	.cfi_def_cfa_offset 8
-	ret
+	movl	$10, %edi
+	jmp	putchar
 	.cfi_endproc
-.LFE449:
+.LFE88:
 	.size	_ZNK7Natural5PrintEv, .-_ZNK7Natural5PrintEv
 	.align 2
 	.globl	_ZNK7Natural4SizeEv
 	.type	_ZNK7Natural4SizeEv, @function
 _ZNK7Natural4SizeEv:
-.LFB450:
+.LFB89:
 	.cfi_startproc
 	movq	(%rdi), %rcx
 	movq	8(%rdi), %rax
@@ -422,55 +449,55 @@ _ZNK7Natural4SizeEv:
 	movslq	%eax, %rdx
 	leaq	(%rcx,%rdx,8), %rdi
 	xorl	%edx, %edx
-	jmp	.L38
-.L40:
+	jmp	.L39
+.L41:
 	incq	%rdx
 	imulq	$-8, %rdx, %r8
 	cmpq	$0, 8(%rdi,%r8)
-	je	.L38
-.L41:
+	je	.L39
+.L42:
 	movl	%esi, %edi
 	movslq	%esi, %rsi
 	xorl	%eax, %eax
 	sall	$6, %edi
 	movq	(%rcx,%rsi,8), %rdx
 	movslq	%edi, %rdi
-	jmp	.L39
-.L38:
+	jmp	.L40
+.L39:
 	movl	%eax, %esi
 	subl	%edx, %esi
 	testl	%esi, %esi
-	jg	.L40
-	jmp	.L41
-.L42:
+	jg	.L41
+	jmp	.L42
+.L43:
 	shrq	%rdx
 	incq	%rax
-.L39:
+.L40:
 	testq	%rdx, %rdx
-	jne	.L42
+	jne	.L43
 	addq	%rdi, %rax
 	ret
 	.cfi_endproc
-.LFE450:
+.LFE89:
 	.size	_ZNK7Natural4SizeEv, .-_ZNK7Natural4SizeEv
 	.align 2
 	.globl	_ZNK7NaturalcvbEv
 	.type	_ZNK7NaturalcvbEv, @function
 _ZNK7NaturalcvbEv:
-.LFB448:
+.LFB87:
 	.cfi_startproc
 	call	_ZNK7Natural4SizeEv
 	testq	%rax, %rax
 	setne	%al
 	ret
 	.cfi_endproc
-.LFE448:
+.LFE87:
 	.size	_ZNK7NaturalcvbEv, .-_ZNK7NaturalcvbEv
 	.align 2
 	.globl	_ZNK7NaturalltERKS_
 	.type	_ZNK7NaturalltERKS_, @function
 _ZNK7NaturalltERKS_:
-.LFB441:
+.LFB81:
 	.cfi_startproc
 	pushq	%r12
 	.cfi_def_cfa_offset 16
@@ -489,9 +516,9 @@ _ZNK7NaturalltERKS_:
 	call	_ZNK7Natural4SizeEv
 	cmpq	%rax, %r12
 	movb	$1, %dl
-	jb	.L46
+	jb	.L47
 	movb	$0, %dl
-	ja	.L46
+	ja	.L47
 	movq	(%rbx), %rsi
 	movq	8(%rbx), %rax
 	xorl	%ecx, %ecx
@@ -500,23 +527,23 @@ _ZNK7NaturalltERKS_:
 	decl	%eax
 	movslq	%eax, %rdx
 	salq	$3, %rdx
-	jmp	.L47
-.L49:
+	jmp	.L48
+.L50:
 	movq	0(%rbp), %rdi
 	movq	(%rsi,%rdx), %r8
 	incq	%rcx
 	movq	(%rdi,%rdx), %rdi
 	subq	$8, %rdx
 	cmpq	%rdi, %r8
-	jb	.L52
-.L47:
+	jb	.L53
+.L48:
 	cmpl	%ecx, %eax
-	jns	.L49
+	jns	.L50
 	xorl	%edx, %edx
-	jmp	.L46
-.L52:
+	jmp	.L47
+.L53:
 	movb	$1, %dl
-.L46:
+.L47:
 	popq	%rbx
 	.cfi_def_cfa_offset 24
 	popq	%rbp
@@ -526,25 +553,25 @@ _ZNK7NaturalltERKS_:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE441:
+.LFE81:
 	.size	_ZNK7NaturalltERKS_, .-_ZNK7NaturalltERKS_
 	.align 2
 	.globl	_ZNK7NaturalgeERKS_
 	.type	_ZNK7NaturalgeERKS_, @function
 _ZNK7NaturalgeERKS_:
-.LFB447:
+.LFB86:
 	.cfi_startproc
 	call	_ZNK7NaturalltERKS_
 	xorl	$1, %eax
 	ret
 	.cfi_endproc
-.LFE447:
+.LFE86:
 	.size	_ZNK7NaturalgeERKS_, .-_ZNK7NaturalgeERKS_
 	.align 2
 	.globl	_ZNK7NaturalleERKS_
 	.type	_ZNK7NaturalleERKS_, @function
 _ZNK7NaturalleERKS_:
-.LFB442:
+.LFB82:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -558,7 +585,7 @@ _ZNK7NaturalleERKS_:
 	.cfi_def_cfa_offset 32
 	call	_ZNK7NaturalltERKS_
 	testb	%al, %al
-	jne	.L56
+	jne	.L57
 	movq	%rbp, %rsi
 	movq	%rbx, %rdi
 	popq	%rbp
@@ -569,7 +596,7 @@ _ZNK7NaturalleERKS_:
 	popq	%rbp
 	.cfi_def_cfa_offset 8
 	jmp	_ZNK7NaturaleqERKS_
-.L56:
+.L57:
 	.cfi_restore_state
 	popq	%rbx
 	.cfi_def_cfa_offset 24
@@ -580,13 +607,13 @@ _ZNK7NaturalleERKS_:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE442:
+.LFE82:
 	.size	_ZNK7NaturalleERKS_, .-_ZNK7NaturalleERKS_
 	.align 2
 	.globl	_ZNK7NaturalgtERKS_
 	.type	_ZNK7NaturalgtERKS_, @function
 _ZNK7NaturalgtERKS_:
-.LFB446:
+.LFB85:
 	.cfi_startproc
 	pushq	%rax
 	.cfi_def_cfa_offset 16
@@ -596,13 +623,13 @@ _ZNK7NaturalgtERKS_:
 	xorl	$1, %eax
 	ret
 	.cfi_endproc
-.LFE446:
+.LFE85:
 	.size	_ZNK7NaturalgtERKS_, .-_ZNK7NaturalgtERKS_
 	.align 2
 	.globl	_ZN7Natural6resizeEm
 	.type	_ZN7Natural6resizeEm, @function
 _ZN7Natural6resizeEm:
-.LFB451:
+.LFB90:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -628,50 +655,49 @@ _ZN7Natural6resizeEm:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE451:
+.LFE90:
 	.size	_ZN7Natural6resizeEm, .-_ZN7Natural6resizeEm
 	.align 2
 	.globl	_ZN7Natural6shrinkEv
 	.type	_ZN7Natural6shrinkEv, @function
 _ZN7Natural6shrinkEv:
-.LFB452:
+.LFB91:
 	.cfi_startproc
 	movq	(%rdi), %rdx
 	addq	$8, %rdx
-.L65:
+.L66:
 	movq	8(%rdi), %rax
 	cmpq	%rax, %rdx
-	jae	.L62
+	jae	.L63
 	cmpq	$0, -8(%rax)
-	jne	.L62
+	jne	.L63
 	subq	$8, %rax
 	movq	%rax, 8(%rdi)
-	jmp	.L65
-.L62:
+	jmp	.L66
+.L63:
 	ret
 	.cfi_endproc
-.LFE452:
+.LFE91:
 	.size	_ZN7Natural6shrinkEv, .-_ZN7Natural6shrinkEv
 	.align 2
 	.globl	_ZNK7NaturalplERKS_
 	.type	_ZNK7NaturalplERKS_, @function
 _ZNK7NaturalplERKS_:
-.LFB437:
+.LFB77:
 	.cfi_startproc
 	pushq	%r15
 	.cfi_def_cfa_offset 16
 	.cfi_offset 15, -16
-	movq	%rdx, %r15
 	pushq	%r14
 	.cfi_def_cfa_offset 24
 	.cfi_offset 14, -24
 	pushq	%r13
 	.cfi_def_cfa_offset 32
 	.cfi_offset 13, -32
-	movq	%rsi, %r13
 	pushq	%r12
 	.cfi_def_cfa_offset 40
 	.cfi_offset 12, -40
+	movq	%rdx, %r12
 	pushq	%rbp
 	.cfi_def_cfa_offset 48
 	.cfi_offset 6, -48
@@ -679,65 +705,91 @@ _ZNK7NaturalplERKS_:
 	.cfi_def_cfa_offset 56
 	.cfi_offset 3, -56
 	movq	%rdi, %rbx
-	subq	$40, %rsp
-	.cfi_def_cfa_offset 96
-	call	_ZN7NaturalC1Ev
-	movq	8(%r13), %r12
-	movq	8(%r15), %rbp
-	subq	0(%r13), %r12
-	subq	(%r15), %rbp
-	movq	(%rbx), %rdi
-	sarq	$3, %r12
-	sarq	$3, %rbp
-	cmpq	%r12, %rbp
-	movq	%r12, %rax
-	cmovae	%rbp, %rax
-	leaq	8(,%rax,8), %r14
-	movq	%r14, %rsi
-	call	realloc
-	leaq	(%rax,%r14), %rcx
-	movq	%rax, (%rbx)
-	movq	%rax, %rdx
-	movq	%rcx, 8(%rbx)
-	jmp	.L67
-.L68:
-	movq	$0, (%rdx)
-	addq	$8, %rdx
-.L67:
-	cmpq	%rcx, %rdx
-	jb	.L68
-	movq	%rax, %rdi
-	leaq	0(,%r12,8), %rcx
-	movq	0(%r13), %rsi
-	xorl	%eax, %eax
-	rep movsb
-	jmp	.L69
-.L70:
-	leaq	(%rdx,%rax,8), %rdx
-	movslq	%ecx, %rcx
-	movq	$0, 8(%rsp)
-	movq	$0, 24(%rsp)
-	movq	24(%rsp), %rdi
-	movq	(%rdx), %rsi
+	subq	$72, %rsp
+	.cfi_def_cfa_offset 128
 	movq	%rsi, (%rsp)
-	movq	(%r15), %rsi
-	addq	(%rsi,%rax,8), %rcx
-	movq	%rcx, 16(%rsp)
-	movq	16(%rsp), %rsi
-	addq	(%rsp), %rsi
-	adcq	8(%rsp), %rdi
-	incq	%rax
-	movq	%rsi, (%rdx)
-	movq	%rdi, %rcx
+	call	_ZN7NaturalC1Ev
+	movq	(%rsp), %r8
+	movq	8(%r12), %rbp
+	subq	(%r12), %rbp
+	movq	(%rbx), %rdi
+	movq	8(%r8), %r15
+	subq	(%r8), %r15
+	sarq	$3, %rbp
+	sarq	$3, %r15
+	cmpq	%r15, %rbp
+	movq	%r15, %rax
+	cmovae	%rbp, %rax
+	leaq	8(,%rax,8), %rdx
+	movq	%rdx, %rsi
+	movq	%rdx, 8(%rsp)
+	call	realloc
+	movq	8(%rsp), %rdx
+	movq	%rax, (%rbx)
+	movq	%rax, %rcx
+	movq	(%rsp), %r8
+	addq	%rax, %rdx
+	movq	%rdx, 8(%rbx)
+	jmp	.L68
 .L69:
+	movq	$0, (%rcx)
+	addq	$8, %rcx
+.L68:
+	cmpq	%rdx, %rcx
+	jb	.L69
+	movq	%rax, %rdi
+	leaq	0(,%r15,8), %rcx
+	movq	(%r8), %rsi
+	xorl	%eax, %eax
+	xorl	%edx, %edx
+	rep movsb
+	jmp	.L70
+.L71:
+	movq	(%rbx), %rcx
+	movq	%rdx, 48(%rsp)
+	movq	$0, 24(%rsp)
+	movq	$0, 40(%rsp)
+	movq	24(%rsp), %rdi
+	movq	$0, 56(%rsp)
+	leaq	(%rcx,%rax,8), %rcx
+	movq	(%rcx), %rsi
+	movq	%rsi, 16(%rsp)
+	movq	(%r12), %rsi
+	movq	(%rsi,%rax,8), %rsi
+	movq	%rsi, 32(%rsp)
+	movq	16(%rsp), %rsi
+	addq	32(%rsp), %rsi
+	adcq	40(%rsp), %rdi
+	addq	48(%rsp), %rsi
+	adcq	56(%rsp), %rdi
+	incq	%rax
+	movq	%rsi, (%rcx)
+	movq	%rdi, %rdx
+.L70:
 	cmpq	%rbp, %rax
-	movq	(%rbx), %rdx
-	jne	.L70
-	movslq	%ecx, %rcx
-	addq	%rcx, (%rdx,%rax,8)
+	jne	.L71
+	cltq
+	xorl	%ecx, %ecx
+	salq	$3, %rax
+	jmp	.L72
+.L73:
+	leaq	(%rcx,%rax), %rdx
+	addq	(%rbx), %rdx
+	xorl	%r14d, %r14d
+	movq	%r14, %rdi
+	movq	(%rdx), %r13
+	movq	%r13, %rsi
+	addq	$1, %rsi
+	adcq	$0, %rdi
+	movq	%rsi, (%rdx)
+	addq	$8, %rcx
+	movq	%rdi, %rdx
+.L72:
+	testq	%rdx, %rdx
+	jne	.L73
 	movq	%rbx, %rdi
 	call	_ZN7Natural6shrinkEv
-	addq	$40, %rsp
+	addq	$72, %rsp
 	.cfi_def_cfa_offset 56
 	movq	%rbx, %rax
 	popq	%rbx
@@ -754,54 +806,26 @@ _ZNK7NaturalplERKS_:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE437:
+.LFE77:
 	.size	_ZNK7NaturalplERKS_, .-_ZNK7NaturalplERKS_
 	.align 2
 	.globl	_ZN7NaturalD2Ev
 	.type	_ZN7NaturalD2Ev, @function
 _ZN7NaturalD2Ev:
-.LFB454:
+.LFB93:
 	.cfi_startproc
 	movq	(%rdi), %rdi
 	jmp	free
 	.cfi_endproc
-.LFE454:
+.LFE93:
 	.size	_ZN7NaturalD2Ev, .-_ZN7NaturalD2Ev
 	.globl	_ZN7NaturalD1Ev
 	.set	_ZN7NaturalD1Ev,_ZN7NaturalD2Ev
 	.align 2
-	.globl	_ZN7NaturalaSERKS_
-	.type	_ZN7NaturalaSERKS_, @function
-_ZN7NaturalaSERKS_:
-.LFB443:
-	.cfi_startproc
-	pushq	%rbx
-	.cfi_def_cfa_offset 16
-	.cfi_offset 3, -16
-	movq	%rdi, %rbx
-	subq	$16, %rsp
-	.cfi_def_cfa_offset 32
-	movq	%rsp, %rdi
-	call	_ZN7NaturalC1ERKS_
-	movq	%rsp, %rsi
-	movq	%rbx, %rdi
-	call	_ZN7Natural4swapERS_
-	movq	%rsp, %rdi
-	call	_ZN7NaturalD1Ev
-	addq	$16, %rsp
-	.cfi_def_cfa_offset 16
-	movq	%rbx, %rax
-	popq	%rbx
-	.cfi_def_cfa_offset 8
-	ret
-	.cfi_endproc
-.LFE443:
-	.size	_ZN7NaturalaSERKS_, .-_ZN7NaturalaSERKS_
-	.align 2
 	.globl	_ZN7NaturalpLERKS_
 	.type	_ZN7NaturalpLERKS_, @function
 _ZN7NaturalpLERKS_:
-.LFB440:
+.LFB80:
 	.cfi_startproc
 	pushq	%rbx
 	.cfi_def_cfa_offset 16
@@ -826,13 +850,13 @@ _ZN7NaturalpLERKS_:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE440:
+.LFE80:
 	.size	_ZN7NaturalpLERKS_, .-_ZN7NaturalpLERKS_
 	.align 2
 	.globl	_ZN7NaturalppEi
 	.type	_ZN7NaturalppEi, @function
 _ZN7NaturalppEi:
-.LFB439:
+.LFB79:
 	.cfi_startproc
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -862,13 +886,13 @@ _ZN7NaturalppEi:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE439:
+.LFE79:
 	.size	_ZN7NaturalppEi, .-_ZN7NaturalppEi
 	.align 2
 	.globl	_ZN7NaturalppEv
 	.type	_ZN7NaturalppEv, @function
 _ZN7NaturalppEv:
-.LFB438:
+.LFB78:
 	.cfi_startproc
 	pushq	%rbx
 	.cfi_def_cfa_offset 16
@@ -892,13 +916,13 @@ _ZN7NaturalppEv:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE438:
+.LFE78:
 	.size	_ZN7NaturalppEv, .-_ZN7NaturalppEv
 	.align 2
 	.globl	_ZNK7NaturalmlERKS_
 	.type	_ZNK7NaturalmlERKS_, @function
 _ZNK7NaturalmlERKS_:
-.LFB435:
+.LFB75:
 	.cfi_startproc
 	pushq	%r14
 	.cfi_def_cfa_offset 16
@@ -923,8 +947,8 @@ _ZNK7NaturalmlERKS_:
 	.cfi_def_cfa_offset 64
 	call	_ZN7NaturalC1Ev
 	movq	0(%r13), %r14
-	jmp	.L82
-.L85:
+	jmp	.L83
+.L86:
 	movq	%rsp, %rdi
 	call	_ZN7NaturalC1Ev
 	movq	8(%rbx), %rsi
@@ -936,17 +960,17 @@ _ZNK7NaturalmlERKS_:
 	movq	(%rbx), %rsi
 	movq	8(%rbx), %rdi
 	movq	(%rsp), %rcx
-	jmp	.L83
-.L84:
+	jmp	.L84
+.L85:
 	movq	(%rsi), %rax
 	addq	$8, %rsi
 	mulq	(%r14)
 	addq	%rax, (%rcx)
 	movq	%rdx, 8(%rcx)
 	addq	$8, %rcx
-.L83:
+.L84:
 	cmpq	%rdi, %rsi
-	jb	.L84
+	jb	.L85
 	movq	%r12, %rsi
 	movq	%rsp, %rdi
 	addq	$8, %r14
@@ -957,9 +981,9 @@ _ZNK7NaturalmlERKS_:
 	call	_ZN7NaturalpLERKS_
 	movq	%rsp, %rdi
 	call	_ZN7NaturalD1Ev
-.L82:
+.L83:
 	cmpq	8(%r13), %r14
-	jb	.L85
+	jb	.L86
 	addq	$16, %rsp
 	.cfi_def_cfa_offset 48
 	movq	%rbp, %rax
@@ -975,13 +999,13 @@ _ZNK7NaturalmlERKS_:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE435:
+.LFE75:
 	.size	_ZNK7NaturalmlERKS_, .-_ZNK7NaturalmlERKS_
 	.align 2
 	.globl	_ZN7NaturalmLERKS_
 	.type	_ZN7NaturalmLERKS_, @function
 _ZN7NaturalmLERKS_:
-.LFB436:
+.LFB76:
 	.cfi_startproc
 	pushq	%rbx
 	.cfi_def_cfa_offset 16
@@ -1006,9 +1030,7 @@ _ZN7NaturalmLERKS_:
 	.cfi_def_cfa_offset 8
 	ret
 	.cfi_endproc
-.LFE436:
+.LFE76:
 	.size	_ZN7NaturalmLERKS_, .-_ZN7NaturalmLERKS_
-	.ident	"GCC: (SUSE Linux) 4.7.2 20130108 [gcc-4_7-branch revision 195012]"
-	.section	.comment.SUSE.OPTs,"MS",@progbits,1
-	.string	"OSpwg"
+	.ident	"GCC: (Gentoo 4.7.2-r1 p1.5, pie-0.5.5) 4.7.2"
 	.section	.note.GNU-stack,"",@progbits

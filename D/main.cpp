@@ -6,12 +6,24 @@
 using namespace std;
 
 int main(int argc, char **argv) {
-    Natural a=2,b=2;
-    for(int i=0;i<1000;++i)
-    {
-        a.Print();
-        printf("\n");
-        a*=b;
-    }
+    Natural a="abcdef",b=0xabcdef,c;
+    a.Print();
+    printf("\n");
+    b.Print();
+    printf("\n");
+    c.Print();
+    printf("\n");
+    a=a;
+    a.Print();
+    printf("\n");
+    a="0000000000000000000000000000000123";
+    a.Print();
+    printf("\n");
+    a="0";
+    a.Print();
+    printf("\n");
+    (a*"fffffffffffffffffffffff865486548fffffffffffffffffffffffff0870876ffffffffffffffffffff").Print();
+    printf("\n");
+    
     return 0;
 }
