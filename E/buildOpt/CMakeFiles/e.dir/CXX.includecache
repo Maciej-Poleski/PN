@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/evil/Studia/Przedmioty/PN/E/filter.cpp
+cstdint
+-
+cassert
+-
+filter.h
+/home/evil/Studia/Przedmioty/PN/E/filter.h
+
+/home/evil/Studia/Przedmioty/PN/E/filter.h
+cstdint
+-
+
