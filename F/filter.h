@@ -10,6 +10,6 @@ struct RGBImage
     uint32_t height;
 };
 
-extern "C" void filter(struct RGBImage * dst, const struct RGBImage * src, const float * matrix);
+void filter(struct RGBImage * dst, const struct RGBImage * src, const float * matrix);
 
 #endif

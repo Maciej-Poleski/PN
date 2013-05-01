@@ -36,10 +36,14 @@ void filter(struct RGBImage * dst, const struct RGBImage * src, const float * ma
                 }
             }
             v4si out= __builtin_ia32_cvtps2dq(output);
+            v4si cmpResult=out<=255;
+            out=(out&cmpResult) | (255 & (~cmpResult));
+            cmpResult=out>=0;
+            out=out&cmpResult;
             uint8_t *ptr=dst->data+dst->width*y*3+x*3;
-            *ptr++=(out[0]<0)?0:((out[0]>255)?255:static_cast<uint8_t>(out[0]));
-            *ptr++=(out[1]<0)?0:((out[1]>255)?255:static_cast<uint8_t>(out[1]));
-            *ptr++=(out[2]<0)?0:((out[2]>255)?255:static_cast<uint8_t>(out[2]));
+            *ptr++=static_cast<uint8_t>(out[0]);
+            *ptr++=static_cast<uint8_t>(out[1]);
+            *ptr++=static_cast<uint8_t>(out[2]);
         }
     }
 }
