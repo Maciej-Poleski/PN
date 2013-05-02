@@ -26,7 +26,7 @@ void filter(struct RGBImage * dst, const struct RGBImage * src, const float * ma
     {
         for(long x=0; x<src->width; ++x)
         {
-            v4f output={0.,0.,0.,0.};
+            v4f output= {0.,0.,0.,0.};
 
             for(long a=-1; a<=1; ++a)
             {
@@ -35,11 +35,9 @@ void filter(struct RGBImage * dst, const struct RGBImage * src, const float * ma
                     output+=getByte(src,y+a,x+b)*matrix[(a+1)*3+(b+1)];
                 }
             }
+            output=__builtin_ia32_maxps(output,v4f {0.f,0.f,0.f,0.f});
+            output=__builtin_ia32_minps(output,v4f {255.f,255.f,255.f,255.f});
             v4si out= __builtin_ia32_cvtps2dq(output);
-            v4si cmpResult=out<=255;
-            out=(out&cmpResult) | (255 & (~cmpResult));
-            cmpResult=out>=0;
-            out=out&cmpResult;
             uint8_t *ptr=dst->data+dst->width*y*3+x*3;
             *ptr++=static_cast<uint8_t>(out[0]);
             *ptr++=static_cast<uint8_t>(out[1]);

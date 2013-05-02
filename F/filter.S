@@ -49,19 +49,18 @@
 	.type	_Z6filterP8RGBImagePKS_PKf, @function
 _Z6filterP8RGBImagePKS_PKf:
 	push	r15	;
-	movaps	xmm3, XMMWORD PTR .LC1[rip]	; tmp209,
-	or	r9, -1	; ivtmp.46,
+	movaps	xmm4, XMMWORD PTR .LC1[rip]	; tmp194,
+	or	r9, -1	; ivtmp.43,
 	push	r14	;
-	pcmpeqd	xmm4, xmm4	; tmp210
-	xorps	xmm5, xmm5	; tmp211
+	xorps	xmm3, xmm3	; output
 	push	r13	;
 	push	r12	;
 	push	rbp	;
 	push	rbx	;
 .L2:
 	mov	eax, DWORD PTR [rsi+12]	; D.2252, src_10(D)->height
-	lea	rbp, [r9+1]	; D.2258,
-	cmp	rbp, rax	; D.2258, D.2252
+	lea	rbp, [r9+1]	; D.2257,
+	cmp	rbp, rax	; D.2257, D.2252
 	jge	.L1	;,
 	lea	rax, [r9+r9*2]	; D.2252,
 	mov	QWORD PTR [rsp-48], rax	; %sfp, D.2252
@@ -72,88 +71,80 @@ _Z6filterP8RGBImagePKS_PKf:
 	jge	.L7	;,
 	mov	r13, QWORD PTR [rsp-48]	; D.2251, %sfp
 	lea	rcx, [rbx+rbx*2]	; D.2251,
-	mov	r11, r9	; ivtmp.35, ivtmp.46
+	mov	r11, r9	; ivtmp.32, ivtmp.43
 	mov	QWORD PTR [rsp-40], rcx	; %sfp, D.2251
-	xor	r12d, r12d	; ivtmp.34
-	xor	r10d, r10d	; ivtmp.32
+	xor	r12d, r12d	; ivtmp.31
+	xor	r10d, r10d	; ivtmp.29
 	xorps	xmm0, xmm0	; output
 	imul	r13, rbx	; D.2251, D.2252
 .L8:
 	lea	rcx, [r12+r13]	; D.2251,
-	mov	r14, r11	; tmp196, ivtmp.35
-	shr	r14, 63	; tmp196,
+	mov	r14, r11	; tmp183, ivtmp.32
+	shr	r14, 63	; tmp183,
 	mov	QWORD PTR [rsp-32], rcx	; %sfp, D.2251
 	or	rcx, -1	; b,
-	mov	QWORD PTR [rsp-24], r14	; %sfp, tmp196
-	lea	r14, [rdx+r10]	; D.2258,
+	mov	QWORD PTR [rsp-24], r14	; %sfp, tmp183
+	lea	r14, [rdx+r10]	; D.2257,
 .L6:
-	mov	r8, rcx	; D.2258, b
-	xorps	xmm2, xmm2	; D.2264
-	add	r8, rax	; D.2258, x
+	mov	r8, rcx	; D.2257, b
+	xorps	xmm2, xmm2	; D.2263
+	add	r8, rax	; D.2257, x
 	js	.L3	;,
 	cmp	BYTE PTR [rsp-24], 0	; %sfp,
 	jne	.L3	;,
-	cmp	r8, rbx	; D.2258, D.2252
+	cmp	r8, rbx	; D.2257, D.2252
 	jge	.L3	;,
 	mov	r15d, DWORD PTR [rsi+12]	; D.2252, src_10(D)->height
-	cmp	r11, r15	; ivtmp.35, D.2252
+	cmp	r11, r15	; ivtmp.32, D.2252
 	jge	.L3	;,
 	lea	r8, [r8+r8*2]	; D.2251,
 	add	r8, QWORD PTR [rsp-32]	; i, %sfp
 	add	r8, QWORD PTR [rsi]	; i, src_10(D)->data
-	movzx	r15d, BYTE PTR [r8]	; *i_80, *i_80
-	cvtsi2ss	xmm6, r15d	; D.2254, *i_80
-	movzx	r15d, BYTE PTR [r8+1]	; MEM[(const uint8_t *)i_80 + 1B], MEM[(const uint8_t *)i_80 + 1B]
-	movzx	r8d, BYTE PTR [r8+2]	; MEM[(const uint8_t *)i_80 + 2B], MEM[(const uint8_t *)i_80 + 2B]
-	cvtsi2ss	xmm2, r15d	; D.2254, MEM[(const uint8_t *)i_80 + 1B]
-	movaps	xmm7, xmm6	; tmp165, D.2254
-	cvtsi2ss	xmm1, r8d	; D.2254, MEM[(const uint8_t *)i_80 + 2B]
-	unpcklps	xmm7, xmm2	; tmp165, D.2254
-	movaps	xmm2, xmm7	; tmp165, tmp165
+	movzx	r15d, BYTE PTR [r8]	; *i_75, *i_75
+	cvtsi2ss	xmm5, r15d	; D.2254, *i_75
+	movzx	r15d, BYTE PTR [r8+1]	; MEM[(const uint8_t *)i_75 + 1B], MEM[(const uint8_t *)i_75 + 1B]
+	movzx	r8d, BYTE PTR [r8+2]	; MEM[(const uint8_t *)i_75 + 2B], MEM[(const uint8_t *)i_75 + 2B]
+	cvtsi2ss	xmm2, r15d	; D.2254, MEM[(const uint8_t *)i_75 + 1B]
+	movaps	xmm6, xmm5	; tmp160, D.2254
+	cvtsi2ss	xmm1, r8d	; D.2254, MEM[(const uint8_t *)i_75 + 2B]
+	unpcklps	xmm6, xmm2	; tmp160, D.2254
+	movaps	xmm2, xmm6	; tmp160, tmp160
 	movss	DWORD PTR [rsp-12], xmm1	; %sfp, D.2254
-	movss	xmm1, DWORD PTR [rsp-12]	; tmp163, %sfp
-	movlhps	xmm2, xmm1	; D.2264, tmp163
+	movss	xmm1, DWORD PTR [rsp-12]	; tmp158, %sfp
+	movlhps	xmm2, xmm1	; D.2263, tmp158
 .L3:
 	inc	rcx	; b
-	movss	xmm1, DWORD PTR [r14+rcx*4]	; D.2255, MEM[base: _30, index: _97, step: 4, offset: 0B]
+	movss	xmm1, DWORD PTR [r14+rcx*4]	; D.2255, MEM[base: _30, index: _92, step: 4, offset: 0B]
 	cmp	rcx, 2	; b,
 	shufps	xmm1, xmm1, 0	; D.2255
-	mulps	xmm1, xmm2	; D.2255, D.2264
+	mulps	xmm1, xmm2	; D.2255, D.2263
 	addps	xmm0, xmm1	; output, D.2255
 	jne	.L6	;,
-	add	r10, 12	; ivtmp.32,
-	add	r12, QWORD PTR [rsp-40]	; ivtmp.34, %sfp
-	inc	r11	; ivtmp.35
-	cmp	r10, 36	; ivtmp.32,
+	add	r10, 12	; ivtmp.29,
+	add	r12, QWORD PTR [rsp-40]	; ivtmp.31, %sfp
+	inc	r11	; ivtmp.32
+	cmp	r10, 36	; ivtmp.29,
 	jne	.L8	;,
-	mov	ecx, DWORD PTR [rdi+8]	; D.2252, dst_43(D)->width
-	cvtps2dq	xmm2, xmm0	; tmp169, output
-	movaps	xmm0, xmm2	; cmpResult, tmp169
-	pcmpgtd	xmm0, xmm3	; cmpResult, tmp209
-	imul	rcx, rbp	; D.2252, D.2258
-	andnps	xmm0, xmm4	; cmpResult, tmp210
-	movaps	xmm1, xmm0	; out.2, cmpResult
-	andnps	xmm1, xmm3	; out.2, tmp209
-	andps	xmm0, xmm2	; out.3, tmp169
-	orps	xmm1, xmm0	; out.2, out.3
-	movaps	xmm0, xmm5	; out.3, tmp211
-	pcmpgtd	xmm0, xmm1	; out.3, out.2
+	mov	ecx, DWORD PTR [rdi+8]	; D.2252, dst_37(D)->width
+	maxps	xmm0, xmm3	; tmp166, output
+	minps	xmm0, xmm4	; tmp166, tmp194
+	imul	rcx, rbp	; D.2252, D.2257
+	cvtps2dq	xmm0, xmm0	; tmp168, tmp166
+	movd	r8d, xmm0	; D.2260,
+	pshufd	xmm1, xmm0, 85	; tmp178, tmp168,
+	punpckhdq	xmm0, xmm0	; tmp180, tmp168
 	add	rcx, rax	; D.2252, x
 	inc	rax	; x
 	lea	rcx, [rcx+rcx*2]	; ptr,
-	andnps	xmm0, xmm1	; out.3, out.2
-	movd	r8d, xmm0	; D.2261,
-	add	rcx, QWORD PTR [rdi]	; ptr, dst_43(D)->data
-	pshufd	xmm1, xmm0, 85	; tmp191, out.3,
-	punpckhdq	xmm0, xmm0	; tmp193, out.3
-	mov	BYTE PTR [rcx], r8b	; *ptr_53, D.2261
-	movd	r8d, xmm1	; D.2261,
-	mov	BYTE PTR [rcx+1], r8b	; MEM[(uint8_t *)ptr_53 + 1B], D.2261
-	movd	r8d, xmm0	; D.2261,
-	mov	BYTE PTR [rcx+2], r8b	; MEM[(uint8_t *)ptr_53 + 2B], D.2261
+	add	rcx, QWORD PTR [rdi]	; ptr, dst_37(D)->data
+	mov	BYTE PTR [rcx], r8b	; *ptr_47, D.2260
+	movd	r8d, xmm1	; D.2260,
+	mov	BYTE PTR [rcx+1], r8b	; MEM[(uint8_t *)ptr_47 + 1B], D.2260
+	movd	r8d, xmm0	; D.2260,
+	mov	BYTE PTR [rcx+2], r8b	; MEM[(uint8_t *)ptr_47 + 2B], D.2260
 	jmp	.L10	;
 .L7:
-	mov	r9, rbp	; ivtmp.46, D.2258
+	mov	r9, rbp	; ivtmp.43, D.2257
 	jmp	.L2	;
 .L1:
 	pop	rbx	;
@@ -167,9 +158,9 @@ _Z6filterP8RGBImagePKS_PKf:
 	.section	.rodata.cst16,"aM",@progbits,16
 	.align 16
 .LC1:
-	.long	255
-	.long	255
-	.long	255
-	.long	255
+	.long	1132396544
+	.long	1132396544
+	.long	1132396544
+	.long	1132396544
 	.ident	"GCC: (Gentoo 4.8.0 p1.2, pie-0.5.5) 4.8.0"
 	.section	.note.GNU-stack,"",@progbits

@@ -1,1 +1,0 @@
-/usr/bin/g++-4.8.0   -std=c++11 -O3 -DNDEBUG    CMakeFiles/e.dir/filter.cpp.o CMakeFiles/e.dir/main.cpp.o  -o e -rdynamic 
