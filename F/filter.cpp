@@ -5,6 +5,7 @@
 
 typedef float v4f __attribute__((vector_size(16)));
 typedef int32_t v4si __attribute__((vector_size(16)));
+typedef int16_t v8hi __attribute__((vector_size(16)));
 
 static v4f getByte(const RGBImage *image, const long y, const long x) __attribute((const));
 static v4f getByte(const RGBImage *image, const long y, const long x)
@@ -32,10 +33,12 @@ void filter(struct RGBImage * dst, const struct RGBImage * src, const float * ma
             {
                 for(long b=-1; b<=1; ++b)
                 {
-                    output+=getByte(src,y+a,x+b)*matrix[(a+1)*3+(b+1)];
+                    output+=getByte(src,y+a,x+b)*v4f{matrix[(a+1)*3+(b+1)],matrix[(a+1)*3+(b+1)],matrix[(a+1)*3+(b+1)],matrix[(a+1)*3+(b+1)]};
                 }
             }
-            auto out=__builtin_ia32_packuswb(__builtin_ia32_packssdw(__builtin_ia32_cvtps2dq(output),0),0);
+            auto a=__builtin_ia32_cvtps2dq(output);
+            auto b=__builtin_ia32_packssdw128(a,a);
+            auto out=__builtin_ia32_packuswb128(b,b);
             uint8_t *ptr=dst->data+dst->width*y*3+x*3;
             *ptr++=static_cast<uint8_t>(out[0]);
             *ptr++=static_cast<uint8_t>(out[1]);

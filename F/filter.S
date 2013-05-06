@@ -3,7 +3,13 @@
 ; GNU C++ (Gentoo 4.8.0 p1.2, pie-0.5.5) version 4.8.0 (x86_64-pc-linux-gnu)
 ;	compiled by GNU C version 4.8.0, GMP version 5.1.1, MPFR version 3.1.2, MPC version 1.0.1
 ; GGC heuristics: --param ggc-min-expand=100 --param ggc-min-heapsize=131072
-; options passed:  -D_GNU_SOURCE filter.cpp -masm=intel -march=core2
+; options passed:  -D_GNU_SOURCE filter.cpp -march=core2 -mcx16 -msahf
+; -mno-movbe -mno-aes -mno-pclmul -mno-popcnt -mno-abm -mno-lwp -mno-fma
+; -mno-fma4 -mno-xop -mno-bmi -mno-bmi2 -mno-tbm -mno-avx -mno-avx2
+; -mno-sse4.2 -msse4.1 -mno-lzcnt -mno-rtm -mno-hle -mno-rdrnd -mno-f16c
+; -mno-fsgsbase -mno-rdseed -mno-prfchw -mno-adx -mfxsr -mno-xsave
+; -mno-xsaveopt --param l1-cache-size=32 --param l1-cache-line-size=64
+; --param l2-cache-size=6144 -mtune=core2 -masm=intel
 ; -auxbase-strip filter.S -Os -Wall -Wextra -std=c++11 -fverbose-asm
 ; options enabled:  -faggressive-loop-optimizations
 ; -fasynchronous-unwind-tables -fauto-inc-dec -fbranch-count-reg
@@ -41,110 +47,100 @@
 ; -funit-at-a-time -funwind-tables -fverbose-asm -fzero-initialized-in-bss
 ; -m128bit-long-double -m64 -m80387 -maccumulate-outgoing-args
 ; -malign-stringops -mcx16 -mfancy-math-387 -mfp-ret-in-387 -mfxsr -mglibc
-; -mieee-fp -mlong-double-80 -mmmx -mno-sse4 -mpush-args -mred-zone -msahf
-; -msse -msse2 -msse3 -mssse3 -mtls-direct-seg-refs
+; -mieee-fp -mlong-double-80 -mmmx -mpush-args -mred-zone -msahf -msse
+; -msse2 -msse3 -msse4.1 -mssse3 -mtls-direct-seg-refs
 
 	.text
 	.globl	_Z6filterP8RGBImagePKS_PKf
 	.type	_Z6filterP8RGBImagePKS_PKf, @function
 _Z6filterP8RGBImagePKS_PKf:
 	push	r15	;
-	movaps	xmm4, XMMWORD PTR .LC1[rip]	; tmp194,
 	or	r9, -1	; ivtmp.43,
 	push	r14	;
-	xorps	xmm3, xmm3	; output
 	push	r13	;
 	push	r12	;
 	push	rbp	;
 	push	rbx	;
 .L2:
-	mov	eax, DWORD PTR [rsi+12]	; D.2252, src_10(D)->height
-	lea	rbp, [r9+1]	; D.2257,
-	cmp	rbp, rax	; D.2257, D.2252
+	mov	eax, DWORD PTR [rsi+12]	; D.2321, src_12(D)->height
+	lea	rbp, [r9+1]	; D.2324,
+	cmp	rbp, rax	; D.2324, D.2321
 	jge	.L1	;,
-	lea	rax, [r9+r9*2]	; D.2252,
-	mov	QWORD PTR [rsp-48], rax	; %sfp, D.2252
+	lea	rax, [r9+r9*2]	; D.2321,
+	mov	QWORD PTR [rsp-40], rax	; %sfp, D.2321
 	xor	eax, eax	; x
 .L10:
-	mov	ebx, DWORD PTR [rsi+8]	; D.2252, src_10(D)->width
-	cmp	rax, rbx	; x, D.2252
+	mov	ebx, DWORD PTR [rsi+8]	; D.2321, src_12(D)->width
+	cmp	rax, rbx	; x, D.2321
 	jge	.L7	;,
-	mov	r13, QWORD PTR [rsp-48]	; D.2251, %sfp
-	lea	rcx, [rbx+rbx*2]	; D.2251,
+	mov	r13, QWORD PTR [rsp-40]	; D.2320, %sfp
+	lea	rcx, [rbx+rbx*2]	; D.2320,
 	mov	r11, r9	; ivtmp.32, ivtmp.43
-	mov	QWORD PTR [rsp-40], rcx	; %sfp, D.2251
+	mov	QWORD PTR [rsp-32], rcx	; %sfp, D.2320
 	xor	r12d, r12d	; ivtmp.31
 	xor	r10d, r10d	; ivtmp.29
 	xorps	xmm0, xmm0	; output
-	imul	r13, rbx	; D.2251, D.2252
+	imul	r13, rbx	; D.2320, D.2321
 .L8:
-	lea	rcx, [r12+r13]	; D.2251,
-	mov	r14, r11	; tmp183, ivtmp.32
-	shr	r14, 63	; tmp183,
-	mov	QWORD PTR [rsp-32], rcx	; %sfp, D.2251
+	lea	rcx, [r12+r13]	; D.2320,
+	mov	r14, r11	; tmp179, ivtmp.32
+	shr	r14, 63	; tmp179,
+	mov	QWORD PTR [rsp-24], rcx	; %sfp, D.2320
 	or	rcx, -1	; b,
-	mov	QWORD PTR [rsp-24], r14	; %sfp, tmp183
-	lea	r14, [rdx+r10]	; D.2257,
+	mov	QWORD PTR [rsp-16], r14	; %sfp, tmp179
+	lea	r14, [rdx+r10]	; D.2324,
 .L6:
-	mov	r8, rcx	; D.2257, b
-	xorps	xmm2, xmm2	; D.2263
-	add	r8, rax	; D.2257, x
+	mov	r8, rcx	; D.2324, b
+	xorps	xmm2, xmm2	; D.2332
+	add	r8, rax	; D.2324, x
 	js	.L3	;,
-	cmp	BYTE PTR [rsp-24], 0	; %sfp,
+	cmp	BYTE PTR [rsp-16], 0	; %sfp,
 	jne	.L3	;,
-	cmp	r8, rbx	; D.2257, D.2252
+	cmp	r8, rbx	; D.2324, D.2321
 	jge	.L3	;,
-	mov	r15d, DWORD PTR [rsi+12]	; D.2252, src_10(D)->height
-	cmp	r11, r15	; ivtmp.32, D.2252
+	mov	r15d, DWORD PTR [rsi+12]	; D.2321, src_12(D)->height
+	cmp	r11, r15	; ivtmp.32, D.2321
 	jge	.L3	;,
-	lea	r8, [r8+r8*2]	; D.2251,
-	add	r8, QWORD PTR [rsp-32]	; i, %sfp
-	add	r8, QWORD PTR [rsi]	; i, src_10(D)->data
-	movzx	r15d, BYTE PTR [r8]	; *i_75, *i_75
-	cvtsi2ss	xmm5, r15d	; D.2254, *i_75
-	movzx	r15d, BYTE PTR [r8+1]	; MEM[(const uint8_t *)i_75 + 1B], MEM[(const uint8_t *)i_75 + 1B]
-	movzx	r8d, BYTE PTR [r8+2]	; MEM[(const uint8_t *)i_75 + 2B], MEM[(const uint8_t *)i_75 + 2B]
-	cvtsi2ss	xmm2, r15d	; D.2254, MEM[(const uint8_t *)i_75 + 1B]
-	movaps	xmm6, xmm5	; tmp160, D.2254
-	cvtsi2ss	xmm1, r8d	; D.2254, MEM[(const uint8_t *)i_75 + 2B]
-	unpcklps	xmm6, xmm2	; tmp160, D.2254
-	movaps	xmm2, xmm6	; tmp160, tmp160
-	movss	DWORD PTR [rsp-12], xmm1	; %sfp, D.2254
-	movss	xmm1, DWORD PTR [rsp-12]	; tmp158, %sfp
-	movlhps	xmm2, xmm1	; D.2263, tmp158
+	lea	r8, [r8+r8*2]	; D.2320,
+	add	r8, QWORD PTR [rsp-24]	; i, %sfp
+	add	r8, QWORD PTR [rsi]	; i, src_12(D)->data
+	movzx	r15d, BYTE PTR [r8]	; *i_77, *i_77
+	cvtsi2ss	xmm2, r15d	; D.2325, *i_77
+	movzx	r15d, BYTE PTR [r8+1]	; MEM[(const uint8_t *)i_77 + 1B], MEM[(const uint8_t *)i_77 + 1B]
+	movzx	r8d, BYTE PTR [r8+2]	; MEM[(const uint8_t *)i_77 + 2B], MEM[(const uint8_t *)i_77 + 2B]
+	cvtsi2ss	xmm3, r15d	; D.2325, MEM[(const uint8_t *)i_77 + 1B]
+	cvtsi2ss	xmm1, r8d	; D.2325, MEM[(const uint8_t *)i_77 + 2B]
+	unpcklps	xmm2, xmm3	; tmp160, D.2325
+	insertps	xmm1, DWORD PTR .LC0[rip], 0x10	; tmp158,
+	movlhps	xmm2, xmm1	; D.2332, tmp158
 .L3:
 	inc	rcx	; b
-	movss	xmm1, DWORD PTR [r14+rcx*4]	; D.2255, MEM[base: _30, index: _92, step: 4, offset: 0B]
+	movss	xmm1, DWORD PTR [r14+rcx*4]	; D.2326, MEM[base: _8, index: _92, step: 4, offset: 0B]
 	cmp	rcx, 2	; b,
-	shufps	xmm1, xmm1, 0	; D.2255
-	mulps	xmm1, xmm2	; D.2255, D.2263
-	addps	xmm0, xmm1	; output, D.2255
+	shufps	xmm1, xmm1, 0	; D.2326
+	mulps	xmm1, xmm2	; D.2326, D.2332
+	addps	xmm0, xmm1	; output, D.2326
 	jne	.L6	;,
 	add	r10, 12	; ivtmp.29,
-	add	r12, QWORD PTR [rsp-40]	; ivtmp.31, %sfp
+	add	r12, QWORD PTR [rsp-32]	; ivtmp.31, %sfp
 	inc	r11	; ivtmp.32
 	cmp	r10, 36	; ivtmp.29,
 	jne	.L8	;,
-	mov	ecx, DWORD PTR [rdi+8]	; D.2252, dst_37(D)->width
-	maxps	xmm0, xmm3	; tmp166, output
-	minps	xmm0, xmm4	; tmp166, tmp194
-	imul	rcx, rbp	; D.2252, D.2257
-	cvtps2dq	xmm0, xmm0	; tmp168, tmp166
-	movd	r8d, xmm0	; D.2260,
-	pshufd	xmm1, xmm0, 85	; tmp178, tmp168,
-	punpckhdq	xmm0, xmm0	; tmp180, tmp168
-	add	rcx, rax	; D.2252, x
+	mov	ecx, DWORD PTR [rdi+8]	; D.2321, dst_38(D)->width
+	cvtps2dq	xmm0, xmm0	; tmp164, output
+	packssdw	xmm0, xmm0	; tmp166, tmp164
+	packuswb	xmm0, xmm0	; tmp167, tmp166
+	imul	rcx, rbp	; D.2321, D.2324
+	add	rcx, rax	; D.2321, x
 	inc	rax	; x
 	lea	rcx, [rcx+rcx*2]	; ptr,
-	add	rcx, QWORD PTR [rdi]	; ptr, dst_37(D)->data
-	mov	BYTE PTR [rcx], r8b	; *ptr_47, D.2260
-	movd	r8d, xmm1	; D.2260,
-	mov	BYTE PTR [rcx+1], r8b	; MEM[(uint8_t *)ptr_47 + 1B], D.2260
-	movd	r8d, xmm0	; D.2260,
-	mov	BYTE PTR [rcx+2], r8b	; MEM[(uint8_t *)ptr_47 + 2B], D.2260
+	add	rcx, QWORD PTR [rdi]	; ptr, dst_38(D)->data
+	pextrb	BYTE PTR [rcx], xmm0, 0	; *ptr_48, tmp167,
+	pextrb	BYTE PTR [rcx+1], xmm0, 1	; MEM[(uint8_t *)ptr_48 + 1B], tmp167,
+	pextrb	BYTE PTR [rcx+2], xmm0, 2	; MEM[(uint8_t *)ptr_48 + 2B], tmp167,
 	jmp	.L10	;
 .L7:
-	mov	r9, rbp	; ivtmp.43, D.2257
+	mov	r9, rbp	; ivtmp.43, D.2324
 	jmp	.L2	;
 .L1:
 	pop	rbx	;
@@ -155,12 +151,9 @@ _Z6filterP8RGBImagePKS_PKf:
 	pop	r15	;
 	ret
 	.size	_Z6filterP8RGBImagePKS_PKf, .-_Z6filterP8RGBImagePKS_PKf
-	.section	.rodata.cst16,"aM",@progbits,16
-	.align 16
-.LC1:
-	.long	1132396544
-	.long	1132396544
-	.long	1132396544
-	.long	1132396544
+	.section	.rodata.cst4,"aM",@progbits,4
+	.align 4
+.LC0:
+	.long	0
 	.ident	"GCC: (Gentoo 4.8.0 p1.2, pie-0.5.5) 4.8.0"
 	.section	.note.GNU-stack,"",@progbits

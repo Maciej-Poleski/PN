@@ -14,74 +14,68 @@ _Z6filterP8RGBImagePKS_PKf:
         push    r12
         push    rbp
         push    rbx
-        or      r8, -1
-        mov     r12b, r8b
+        or      r9, -1
 .for1:
         mov     eax, DWORD [rsi+12]
-        lea     rbp, [r8+1]
+        lea     rbp, [r9+1]
         cmp     rbp, rax
         jge     .return
 
-        lea     rax, [r8+r8*2]
-        mov     QWORD [rsp-48], rax
+        lea     rax, [r9+r9*2]
+        mov     QWORD [rsp-40], rax
         xor     eax, eax        ; x
 .for2:
         mov     ebx, DWORD [rsi+8]
         cmp     rax, rbx
         jge     .for2_end
 
+        mov     r13, QWORD [rsp-40]
         lea     rcx, [rbx+rbx*2]
-        mov     r11, r8
-        xor     r13d, r13d
-        mov     QWORD [rsp-40], rcx
-        mov     rcx, QWORD [rsp-48]
+        mov     r11, r9
+        mov     QWORD [rsp-32], rcx
+        xor     r12d, r12d
         xor     r10d, r10d
         xorps   xmm0, xmm0      ; output
-        imul    rcx, rbx
-        mov     QWORD [rsp-56], rcx
+        imul    r13, rbx
 .step1: ; prepare matrix
-        mov     rcx, QWORD [rsp-56]
+        lea     rcx, [r12+r13]
         mov     r14, r11
         shr     r14, 63 ; bit znaku
-        mov     QWORD [rsp-24], r14
-        lea     r14, [rdx+r10]
-        add     rcx, r13
-        mov     QWORD [rsp-32], rcx
+        mov     QWORD [rsp-24], rcx
         or      rcx, -1 ; b = -1
+        mov     QWORD [rsp-16], r14
+        lea     r14, [rdx+r10]
 .step2: ; prepare next vector (RGB)
-        mov     r9, rcx
+        mov     r8, rcx
         xorps   xmm2, xmm2      ; vector
-        add     r9, rax
+        add     r8, rax
         js      .step3
 
-        cmp     BYTE [rsp-24], 0
+        cmp     BYTE [rsp-16], 0
         jne     .step3
 
-        cmp     r9, rbx
+        cmp     r8, rbx
         jge     .step3
 
         mov     r15d, DWORD [rsi+12]
         cmp     r11, r15
         jge     .step3
 
-        lea     r9, [r9+r9*2]
-        add     r9, QWORD [rsp-32]
-        add     r9, QWORD [rsi]
-        movzx   r15d, BYTE [r9]
-        cvtsi2ss        xmm3, r15d
-        movzx   r15d, BYTE [r9+1]
-        movzx   r9d, BYTE [r9+2]
+        lea     r8, [r8+r8*2]
+        add     r8, QWORD [rsp-24]
+        add     r8, QWORD [rsi]
+        movzx   r15d, BYTE [r8]
         cvtsi2ss        xmm2, r15d
-        movaps  xmm4, xmm3
-        cvtsi2ss        xmm1, r9d
-        unpcklps        xmm4, xmm2
-        movaps  xmm2, xmm4
-        movss   [rsp-12], xmm1
-        movss   xmm1, [rsp-12]
+        movzx   r15d, BYTE [r8+1]
+        movzx   r8d, BYTE [r8+2]
+        cvtsi2ss        xmm3, r15d
+        cvtsi2ss        xmm1, r8d
+        unpcklps        xmm2, xmm3
+        insertps        xmm1, DWORD [zero], 0x10
         movlhps xmm2, xmm1
 .step3:
         inc     rcx     ; ++b
-        movss   xmm1, [r14+rcx*4]     ; get value from matrix
+        movss   xmm1, DWORD [r14+rcx*4]     ; get value from matrix
         cmp     rcx, 2
         shufps  xmm1, xmm1, 0   ; make vector
         mulps   xmm1, xmm2      ; mul
@@ -89,7 +83,7 @@ _Z6filterP8RGBImagePKS_PKf:
         jne     .step2
 
         add     r10, 12
-        add     r13, QWORD [rsp-40]
+        add     r12, QWORD [rsp-32]
         inc     r11
         cmp     r10, 36
         jne     .step1
@@ -97,60 +91,20 @@ _Z6filterP8RGBImagePKS_PKf:
         ; prepare output
         mov     ecx, DWORD [rdi+8]
         cvtps2dq        xmm0, xmm0      ; float -> int
-        movd    r9d, xmm0
+        packssdw        xmm0, xmm0      ; int -> short
+        packuswb        xmm0, xmm0      ; short -> unsigned char
         imul    rcx, rbp
         add     rcx, rax
-        lea     rcx, [rcx+rcx*2]
+        inc     rax                     ; ++x
+        lea     rcx, [rcx+rcx*2]        ; ptr
         add     rcx, QWORD [rdi]
-        test    r9d, r9d
-        js      .we_need_0_here1
-        cmp     r9d, 255
-        cmovg   r9d, r12d       ; saturation
-        jmp     .store1
-
-.we_need_0_here1:
-        xor     r9d, r9d
-
-.store1:
-        mov     BYTE [rcx], r9b
-
-        pshufd  xmm1, xmm0, 85
-        movd    r9d, xmm1
-        test    r9d, r9d
-        js      .we_need_0_here2
-
-        cmp     r9d, 255
-        cmovg   r9d, r12d       ; saturation
-        jmp     .store2
-
-.we_need_0_here2:
-        xor     r9d, r9d
-
-.store2:
-        mov     BYTE [rcx+1], r9b
-
-        punpckhdq       xmm0, xmm0
-        movd    r9d, xmm0
-        test    r9d, r9d
-        js      .we_need_0_here3
-
-        cmp     r9d, 255
-        cmovg   r9d, r12d       ; saturation
-        jmp     .store3
-
-.we_need_0_here3:
-        xor     r9d, r9d
-
-.store3:
-        mov     BYTE [rcx+2], r9b
-
-        inc     rax     ; ++x
+        pextrb  BYTE [rcx], xmm0, 0
+        pextrb  BYTE [rcx+1], xmm0, 1
+        pextrb  BYTE [rcx+2], xmm0, 2
         jmp     .for2
-
 .for2_end:
-        mov     r8, rbp
+        mov     r9, rbp
         jmp     .for1
-
 .return:
         pop     rbx
         pop     rbp
@@ -159,3 +113,6 @@ _Z6filterP8RGBImagePKS_PKf:
         pop     r14
         pop     r15
         ret
+
+section .text align=16
+    zero: dd 0
