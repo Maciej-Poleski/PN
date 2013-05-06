@@ -35,9 +35,7 @@ void filter(struct RGBImage * dst, const struct RGBImage * src, const float * ma
                     output+=getByte(src,y+a,x+b)*matrix[(a+1)*3+(b+1)];
                 }
             }
-            output=__builtin_ia32_maxps(output,v4f {0.f,0.f,0.f,0.f});
-            output=__builtin_ia32_minps(output,v4f {255.f,255.f,255.f,255.f});
-            v4si out= __builtin_ia32_cvtps2dq(output);
+            auto out=__builtin_ia32_packuswb(__builtin_ia32_packssdw(__builtin_ia32_cvtps2dq(output),0),0);
             uint8_t *ptr=dst->data+dst->width*y*3+x*3;
             *ptr++=static_cast<uint8_t>(out[0]);
             *ptr++=static_cast<uint8_t>(out[1]);
