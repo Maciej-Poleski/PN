@@ -2,20 +2,36 @@ bits 64
 
 section .text
 
-global _Z8th_yieldv
+global sleepThreadResumeThread
 
-_Z8th_yieldv:
-push rax
+
+sleepThreadResumeThread:
+; adres powrotu właśnie został zapisany na stosie
 push rbx
-push rcx
-push rdx
-push r8
-push r9
-push r10
-push r11
+push rbp
 push r12
 push r13
 push r14
 push r15
+push rdi
+push rsi
 
 
+; Zapisz rsp w odpowiednim ([rdi]) miejscu
+mov [rdi],rsp
+
+; Odczytaj nowy rsp z odpowiedniego ([rsi]) miejsca
+mov rsp,[rsi]
+
+; Odczytaj stan wznawianego wątku
+pop rsi
+pop rdi
+pop r15
+pop r14
+pop r13
+pop r12
+pop rbp
+pop rbx
+
+; ret
+ret
