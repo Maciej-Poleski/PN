@@ -2,31 +2,8 @@
 #include <queue>
 #include <cassert>
 
-#ifndef __THREADS_H__
-#define __THREADS_H__
-
 // typ funkcji uruchamianej w wątku: przyjmuje dwa argumenty, nie zwraca żadnej wartości
 typedef void (*thread_t)(unsigned long, unsigned long);
-
-// tworzy nowy wątek z podanymi argumentami, przydzielając mu nowy stos (min. 64kB)
-// zwraca numer utworzonego wątku (0 do 255 -- można stworzyć maksymalnie 256 wątków)
-// lub -1 jeśli wątku nie uda się stworzyć
-int th_create(thread_t, unsigned long, unsigned long);
-
-// przełącza wykonywanie na inny wątek
-void th_yield();
-
-// kończy działanie bieżącego wątku, zwalniając pamięć jego stosu
-void th_exit();
-
-// zwraca numer bieżącego wątku
-int th_getid();
-
-// uruchamia zarejestrowane wątki
-// powrót z tej funkcji następuje, gdy ostatni wątek kończy działanie
-void run();
-
-#endif
 
 static int currentId=-1;
 
@@ -67,7 +44,7 @@ static void initializeThread(unsigned char id, thread_t code,unsigned long arg1,
     threads[id].oldRsp=&threads[id].stack[Thread::stackSize-9];
 }
 
-int th_create(thread_t thread, unsigned long arg1,unsigned long arg2)
+extern "C" int th_create(thread_t thread, unsigned long arg1,unsigned long arg2)
 {
     int id=nextThreadId();
     if(id==-1)
@@ -77,7 +54,7 @@ int th_create(thread_t thread, unsigned long arg1,unsigned long arg2)
     return id;
 }
 
-int th_getid()
+extern "C" int th_getid()
 {
     return currentId;
 }
@@ -99,7 +76,7 @@ void startThread(unsigned char id)
     sleepThreadResumeThread(&mainRsp,&(threads[id].oldRsp));
 }
 
-void th_yield()
+extern "C" void th_yield()
 {
     int id=currentId;
     threadsQueue.push(id);
@@ -108,7 +85,7 @@ void th_yield()
     sleepThreadResumeThread(&(threads[id].oldRsp),&mainRsp);
 }
 
-void th_exit()
+extern "C" void th_exit()
 {
     int id=currentId;
     threads[id].id=-1;
@@ -117,7 +94,7 @@ void th_exit()
     sleepThreadResumeThread(&(threads[id].oldRsp),&mainRsp);
 }
 
-void run()
+extern "C" void run()
 {
     while(!threadsQueue.empty())
     {
