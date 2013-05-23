@@ -25,9 +25,19 @@ static std::queue<unsigned char> threadsQueue;
 
 static int nextThreadId()
 {
+    static std::size_t next=0;
+    for(std::size_t i=next;i<256;++i)
+        if(threads[i].id==-1)
+        {
+            next=(i+1)%256;
+            return i;
+        }
     for(std::size_t i=0;i<256;++i)
         if(threads[i].id==-1)
+        {
+            next=(i+1)%256;
             return i;
+        }
     return -1;
 }
 
@@ -44,7 +54,7 @@ static void initializeThread(unsigned char id, thread_t code,unsigned long arg1,
     threads[id].oldRsp=&threads[id].stack[Thread::stackSize-9];
 }
 
-extern "C" int th_create(thread_t thread, unsigned long arg1,unsigned long arg2)
+int th_create(thread_t thread, unsigned long arg1,unsigned long arg2)
 {
     int id=nextThreadId();
     if(id==-1)
@@ -54,7 +64,7 @@ extern "C" int th_create(thread_t thread, unsigned long arg1,unsigned long arg2)
     return id;
 }
 
-extern "C" int th_getid()
+int th_getid()
 {
     return currentId;
 }
@@ -76,7 +86,7 @@ void startThread(unsigned char id)
     sleepThreadResumeThread(&mainRsp,&(threads[id].oldRsp));
 }
 
-extern "C" void th_yield()
+void th_yield()
 {
     int id=currentId;
     threadsQueue.push(id);
@@ -85,7 +95,7 @@ extern "C" void th_yield()
     sleepThreadResumeThread(&(threads[id].oldRsp),&mainRsp);
 }
 
-extern "C" void th_exit()
+void th_exit()
 {
     int id=currentId;
     threads[id].id=-1;
@@ -94,7 +104,7 @@ extern "C" void th_exit()
     sleepThreadResumeThread(&(threads[id].oldRsp),&mainRsp);
 }
 
-extern "C" void run()
+void run()
 {
     while(!threadsQueue.empty())
     {
