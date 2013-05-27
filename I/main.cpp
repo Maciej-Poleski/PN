@@ -6,13 +6,13 @@
 #include "sbuffer.h"
 #include "isbuffer.h"
 
-#define ROUNDS (1<<18)
-#define BSIZE (1<<10)
+#define ROUNDS (1<<15)
+#define BSIZE (1<<8)
 
-#define PRODUCERS 2
+#define PRODUCERS 4
 #define PRODUCE_DELAY 0
-#define CONSUMERS 2
-#define CONSUME_DELAY 0
+#define CONSUMERS 10
+#define CONSUME_DELAY 15
 
 
 struct Item {
