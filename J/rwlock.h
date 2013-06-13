@@ -11,38 +11,80 @@
 #include <thread>
 #include <atomic>
 
+
+struct binary_semaphore
+{
+    binary_semaphore(int avail = 0) : avail(avail), waiters(0)
+    {
+    }
+
+    void up()
+    {
+        if(avail==1)
+            return;
+        int v = ++avail;
+        if (waiters > 0)
+            avail.wake(v);
+    }
+
+    void down()
+    {
+        int v;
+        while (true)
+        {
+            v = avail;
+            if (v <= 0)
+            {
+                waiters++;
+                avail.wait(v);
+                waiters--;
+            }
+            else if (avail.compare_exchange_strong(v, v-1))
+                return;
+        }
+    }
+
+private:
+
+    futex               avail;
+    std::atomic<int>    waiters;
+};
+
 struct rwlock : private xlock
 {
-    static const int MAX_READERS = 1<<30;
+    static const int MAX_READERS = 1 << 30;
 
-    rwlock() : rsem(0),asem(0),wsem(1),reads(0),waits(0),asemwaits(0) {}
+    rwlock() : rsem(0), asem(0), wsem(1), reads(0), waits(0), asemwaits(0) {}
 
     void lockR()
     {
-        for(;;) {
-            while(waits>0)
+        for (;;)
+        {
+            if (waits > 0)
             {
-                ++asemwaits;    // FIXME Race here: unlock asem before increment
-                if(waits==0)
+                xlock::lock();
+                while (waits > 0)
                 {
-                   // --asemwaits;
-                    break;
+                    ++asemwaits;    // NOTE Old race here: unlock asem before increment
+                    xlock::unlock();
+                    asem.down();
+                    xlock::lock();
                 }
-                asem.down();
+                xlock::unlock();
             }
             // NOTE Race here: waits=0, reads=0
             ++reads;
             // repeat check
-            if(waits==0)
+            if (waits == 0)
                 break;
-            --reads;
+            if (reads.fetch_add(-1)==1)
+                rsem.up();
         }
     }
 
     void unlockR()
     {
-        --reads;
-        if(reads==0)
+        if (reads.fetch_add(-1)==1)
             rsem.up();
     }
 
@@ -50,7 +92,7 @@ struct rwlock : private xlock
     {
         ++waits;
         wsem.down();
-        while(reads>0)
+        while (reads > 0)
         {
             rsem.down();
         }
@@ -61,19 +103,21 @@ struct rwlock : private xlock
     {
         wsem.up();
         --waits;        // Move to unlock
-        while(waits==0)
+        xlock::lock();
+        while (waits == 0)
         {
-            int c=asemwaits.exchange(0);
-            if(c==0)
+            int c = asemwaits.exchange(0);
+            if (c == 0)
                 break;
-            while(c--)
+            while (c--)
                 asem.up();
         }
+        xlock::unlock();
     }
 
 private:
 
-    semaphore           rsem;
+    binary_semaphore    rsem;
     semaphore           asem;
     semaphore           wsem;
     std::atomic<int>    reads;
