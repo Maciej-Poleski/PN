@@ -11,115 +11,74 @@
 #include <thread>
 #include <atomic>
 
-#include <linux/futex.h>
-#include <sys/time.h>
-#include <unistd.h>
-
-namespace
-{
-
-static int futex(std::atomic<int> *uaddr, int op, int val, const struct timespec *timeout,
-                 int *uaddr2, int val3)
-{
-    return syscall(202,uaddr,op,val,timeout,uaddr2,val3);
-}
-
-static int futex_wait(std::atomic<int> &ftx,int expected)
-{
-    return futex(&ftx,FUTEX_WAIT,expected,nullptr,nullptr,0);
-}
-
-static int futex_wake(std::atomic<int> &ftx,int count)
-{
-    return futex(&ftx,FUTEX_WAKE,count,nullptr,nullptr,0);
-}
-
-};
-
-class Semafor
-{
-public:
-    Semafor(int val) : _futex(val) {}
-
-    void down()
-    {
-        int c;
-        while((c=_futex.fetch_add(-1))<=0)
-        {
-            futex_wait(_futex,c-1);
-            _futex.fetch_add(1);
-        }
-    }
-
-    void up()
-    {
-        if(_futex.fetch_add(1)<0)
-            futex_wake(_futex,1);
-    }
-private:
-    std::atomic<int> _futex;
-};
-
 struct rwlock : private xlock
 {
     static const int MAX_READERS = 1<<30;
 
-    rwlock() : rsem(MAX_READERS),wsem(0),reads(0),waits(0) {}
+    rwlock() : rsem(0),asem(0),wsem(1),reads(0),waits(0),asemwaits(0) {}
 
     void lockR()
     {
-        for(;;)
-        {
+        for(;;) {
+            while(waits>0)
+            {
+                ++asemwaits;    // FIXME Race here: unlock asem before increment
+                if(waits==0)
+                {
+                   // --asemwaits;
+                    break;
+                }
+                asem.down();
+            }
+            // NOTE Race here: waits=0, reads=0
+            ++reads;
+            // repeat check
             if(waits==0)
-            {
-                rsem.down();
-                return;
-            }
-            else
-            {
-                ++reads;        // ostatni pisarz kończący prace odblokowuje
-                wsem.down();
-            }
+                break;
+            --reads;
         }
     }
 
     void unlockR()
     {
-        rsem.up();
+        --reads;
+        if(reads==0)
+            rsem.up();
     }
 
     void lock()
     {
         ++waits;
-        xlock::lock();
-        for(std::size_t i=0; i<MAX_READERS; ++i)
+        wsem.down();
+        while(reads>0)
+        {
             rsem.down();
-        --waits;
-        xlock::unlock();
+        }
+
     }
 
     void unlock()
     {
-        while(waits==0 && reads>0)
+        wsem.up();
+        --waits;        // Move to unlock
+        while(waits==0)
         {
-            --reads;
-            wsem.up();
-        }
-        for(std::size_t i=0; i<MAX_READERS; ++i)
-            rsem.up();
-        while(waits==0 && reads>0)
-        {
-            --reads;
-            wsem.up();
+            int c=asemwaits.exchange(0);
+            if(c==0)
+                break;
+            while(c--)
+                asem.up();
         }
     }
 
 private:
 
-    Semafor           rsem;
-    Semafor           wsem;
+    semaphore           rsem;
+    semaphore           asem;
+    semaphore           wsem;
     std::atomic<int>    reads;
     std::atomic<int>    waits;
+    std::atomic<int>    asemwaits;
 };
 
 #endif // H_RWLOCK
